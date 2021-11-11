@@ -20,10 +20,22 @@ const options: cors.CorsOptions = {
 };
 
 app.use(cors(options));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV === "production") {
+    if (
+      req.headers.host === "https://heroku-base-app-attempt-02.herokuapp.com/"
+    )
+      return res.redirect(301, "https://www.lockymichael.me");
+    if (req.headers["x-forwarded-proto"] !== "https")
+      return res.redirect("https://" + req.headers.host + req.url);
+    else return next();
+  } else return next();
+});
 
 app.use(express.static(path.join(__dirname, "../client/build/")));
-
-app.use(bodyParser.json());
 
 app.get("/hello", (req: Request, res: Response) => {
   res.send("Hello World !");

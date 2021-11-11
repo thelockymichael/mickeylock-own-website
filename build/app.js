@@ -14,14 +14,26 @@ var app = (0, express_1.default)();
 // Serve static client app
 // Add a list of allowed origins.
 // If you have more origins you would like to add, you can add them to the array below.
-var allowedOrigins = ["http://localhost:3000"];
+var allowedOrigins = ["http://localhost:3000"]; // Not sure, if I need this line
 var options = {
     origin: allowedOrigins,
 };
 app.use((0, cors_1.default)(options));
-app.use(express_1.default.static(path_1.default.join(__dirname, "../client/build/")));
-console.log("item 01,", path_1.default.join(__dirname, "../client/build/"));
 app.use(body_parser_1.default.json());
+app.use(body_parser_1.default.urlencoded({ extended: true }));
+app.use(function (req, res, next) {
+    if (process.env.NODE_ENV === "production") {
+        if (req.headers.host === "https://heroku-base-app-attempt-02.herokuapp.com/")
+            return res.redirect(301, "https://www.lockymichael.me");
+        if (req.headers["x-forwarded-proto"] !== "https")
+            return res.redirect("https://" + req.headers.host + req.url);
+        else
+            return next();
+    }
+    else
+        return next();
+});
+app.use(express_1.default.static(path_1.default.join(__dirname, "../client/build/")));
 app.get("/hello", function (req, res) {
     res.send("Hello World !");
 });
