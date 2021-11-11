@@ -22,6 +22,8 @@ app.use((0, cors_1.default)(options));
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
 app.use(function (req, res, next) {
+    console.log("req.headers.host", req.headers.host);
+    console.log("req.url", req.url);
     if (process.env.NODE_ENV === "production") {
         if (req.headers.host === "https://heroku-base-app-attempt-02.herokuapp.com/")
             return res.redirect(301, "https://www.lockymichael.me");
