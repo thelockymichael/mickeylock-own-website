@@ -19,20 +19,20 @@ app.use(cors(options));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// app.use((req, res, next) => {
-//   console.log("req.headers.host", req.headers.host);
-//   console.log("req.url", req.url);
+app.use((req, res, next) => {
+  console.log("req.headers.host", req.headers.host);
+  console.log("req.url", req.url);
 
-//   if (process.env.NODE_ENV === "production") {
-//     if (
-//       req.headers.host === "https://heroku-base-app-attempt-02.herokuapp.com/"
-//     )
-//       return res.redirect(301, "https://www.mickeylock.com");
-//     if (req.headers["x-forwarded-proto"] !== "https")
-//       return res.redirect("https://" + req.headers.host + req.url);
-//     else return next();
-//   } else return next();
-// });
+  if (process.env.NODE_ENV === "production") {
+    if (
+      req.headers.host === "https://heroku-base-app-attempt-02.herokuapp.com/"
+    )
+      return res.redirect(301, "https://www.mickeylock.com");
+    if (req.headers["x-forwarded-proto"] !== "https")
+      return res.redirect("https://" + req.headers.host + req.url);
+    else return next();
+  } else return next();
+});
 
 app.use(express.static(path.join(__dirname, "../client/build/")));
 
