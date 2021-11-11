@@ -24,6 +24,11 @@ app.use((req, res, next) => {
   console.log("req.url", req.url);
 
   if (process.env.NODE_ENV === "production") {
+    if (req.headers.host?.slice(0, 4) === "www.") {
+      var newHost = req.headers.host.slice(4);
+      return res.redirect(301, "https://" + newHost + req.originalUrl);
+    }
+
     if (
       req.headers.host === "https://heroku-base-app-attempt-02.herokuapp.com/"
     )
