@@ -20,6 +20,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
+  console.log("req.headers.host", req.headers.host);
+  console.log("req.url", req.url);
+
   if (process.env.NODE_ENV === "production") {
     if (
       req.headers.host === "https://heroku-base-app-attempt-02.herokuapp.com/"
