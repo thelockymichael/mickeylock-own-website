@@ -26,7 +26,7 @@ app.use(function (req, res, next) {
     console.log("req.url", req.url);
     if (process.env.NODE_ENV === "production") {
         if (req.headers.host === "https://heroku-base-app-attempt-02.herokuapp.com/")
-            return res.redirect(301, "https://www.lockymichael.me");
+            return res.redirect(301, "https://www.mickeylock.com");
         if (req.headers["x-forwarded-proto"] !== "https")
             return res.redirect("https://" + req.headers.host + req.url);
         else
