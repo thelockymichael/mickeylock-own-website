@@ -28,6 +28,9 @@ app.use((req, res, next) => {
       req.headers.host === "https://heroku-base-app-attempt-02.herokuapp.com/"
     )
       return res.redirect(301, "https://www.mickeylock.com");
+    if (!req.headers.host?.match(/^www\./))
+      res.writeHead(301, "https://www.mickeylock.com");
+    else return next();
     if (req.headers["x-forwarded-proto"] !== "https")
       return res.redirect("https://" + req.headers.host + req.url);
     else return next();
