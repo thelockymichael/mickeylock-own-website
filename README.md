@@ -39,3 +39,13 @@
     }
 }
 ```
+
+### Problems and how I solved
+
+## Problem 1: babel-jest version incompatibility between TS React App and TS Node JS
+
+Solution: I created '.env' file in client folder and added the following line:
+
+```
+SKIP_PREFLIGHT_CHECK=true
+```
