@@ -1,14 +1,15 @@
 import React from "react";
 import "./App.css";
 
-function App() {
+const App: React.FC<{}> = () => {
+  // TODO
+  // Router
+  // Switch
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>Hello world !!!</p>
-      </header>
+    <div>
+      <p>Hello world !!!</p>
     </div>
   );
-}
+};
 
 export default App;
