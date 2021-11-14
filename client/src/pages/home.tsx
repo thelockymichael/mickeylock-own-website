@@ -8,13 +8,22 @@ import styled from "styled-components";
 import { primaryColor, primaryText, secondaryColor } from "../colors/colors";
 
 const Wrapper = styled.div`
+  height: 100%;
   background-color: ${primaryColor};
-  flex-direction: column;
   display: flex;
   justify-content: center;
+  align-items: center;
   @media (max-width: 768px) {
-    height: 60rem;
+    height: 50rem;
   }
+`;
+
+const Container = styled.div`
+  display: flex;
+  height: 50rem;
+  width: 100rem;
+  justify-content: space-around;
+  flex-direction: column;
 `;
 
 const NavLink = styled(Link)`
@@ -69,18 +78,20 @@ const HomePage: React.FC<IPage> = (props) => {
 
   return (
     <Wrapper>
-      <NameContainer>
-        <NameText>Mickey</NameText>
-        <DescText>Mobile Apps || Fullstack</DescText>
-      </NameContainer>
-      <GroupContainer>
-        <div>
-          <NavLink to="/about"> About </NavLink>
-        </div>
-        <div>
-          <NavLink to="/projects"> Projects </NavLink>
-        </div>
-      </GroupContainer>
+      <Container>
+        <NameContainer>
+          <NameText>Mickey</NameText>
+          <DescText>Mobile Apps || Fullstack</DescText>
+        </NameContainer>
+        <GroupContainer>
+          <div>
+            <NavLink to="/about"> About </NavLink>
+          </div>
+          <div>
+            <NavLink to="/projects"> Projects </NavLink>
+          </div>
+        </GroupContainer>
+      </Container>
     </Wrapper>
   );
 };

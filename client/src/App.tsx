@@ -22,14 +22,9 @@ import { faGithub, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 
 const FooterContainer = styled.div`
-  /* position: fixed;
-  left: 0;
-  width: 100%;
-  bottom: 0; */
-
   flex: 0 1 40px;
   bottom: 0;
-  position: fixed;
+  left: 0;
   width: 100%;
 `;
 
@@ -67,13 +62,13 @@ const Breakline = styled.div`
 
 const Wrapper = styled.div`
   display: flex;
-  flex: 1 1 auto;
+  flex-flow: column;
   height: 100%;
 `;
 
 const Content = styled.div`
   flex: 1 1 auto;
-  background-color: aqua;
+  background-color: ${primaryColor};
 `;
 
 const App: React.FC<{}> = () => {
@@ -84,7 +79,7 @@ const App: React.FC<{}> = () => {
     <Router>
       <Wrapper>
         <Content>
-          {/* <Switch>
+          <Switch>
             {routes.map((route, index) => {
               return (
                 <Route
@@ -101,8 +96,7 @@ const App: React.FC<{}> = () => {
                 />
               );
             })}
-          </Switch> */}
-          dasdasdsa
+          </Switch>
         </Content>
 
         <FooterContainer>
