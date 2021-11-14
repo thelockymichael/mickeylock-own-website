@@ -15,17 +15,24 @@ code {
   text-decoration: none;
 }
 
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
 html {
   font-size: 10px;
   font-family: "Roboto", sans-serif;
 }
+/* TODO
 
+  background-color: #212224; 
+  change into a global variable
+*/
 body {
-  width: 80%m;
-  height: 100%;
+  background-color: #212224;
   /* background: url('images/sitebg.jpg') no-repeat center fixed; */
-  background-size: cover;
-  margin: 0 auto;
   font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Segoe UI", "Roboto",
     "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
