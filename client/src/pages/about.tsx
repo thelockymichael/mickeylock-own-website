@@ -4,7 +4,13 @@ import logging from "../config/logging";
 
 import styled from "styled-components";
 
-import { primaryColor, primaryText, secondaryColor } from "../colors/colors";
+import {
+  primaryColor,
+  primaryShade,
+  primaryText,
+  secondaryColor,
+  secondaryShade,
+} from "../colors/colors";
 
 // Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -16,13 +22,12 @@ import { Link } from "react-router-dom";
 const Wrapper = styled.div`
   height: 100%;
   background-color: ${primaryColor};
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;
 
 const Container = styled.div`
   display: flex;
+  flex: 1 1 auto;
+
   flex-direction: column;
   justify-content: space-around;
 `;
@@ -32,6 +37,10 @@ const NavBar = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const NavBarBack = styled.div`
@@ -39,6 +48,10 @@ const NavBarBack = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: 768px) {
+    justify-content: flex-start;
+  }
 `;
 
 const NavBarItem = styled.div`
@@ -64,7 +77,13 @@ const NavLink = styled(Link)`
   }
   @media (max-width: 768px) {
     font-size: 4em;
+    text-align-last: left;
   }
+`;
+
+const Breakline = styled.div`
+  height: 0.5rem;
+  background-color: ${primaryShade};
 `;
 
 const GroupContainer = styled.div`
@@ -114,12 +133,15 @@ const AboutPage: React.FC<IPage> = (props) => {
               />
             </Link>
           </NavBarBack>
+          <Breakline />
           <NavBarItem>
             <NavLink to="/about">About</NavLink>
           </NavBarItem>
+          <Breakline />
           <NavBarItem>
             <NavLink to="/projects">Projects</NavLink>
           </NavBarItem>
+          <Breakline />
         </NavBar>
         <GroupContainer>
           <TextContainer>
