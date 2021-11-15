@@ -1,11 +1,17 @@
 import React, { useEffect } from "react";
 import IPage from "../interfaces/page";
 import logging from "../config/logging";
-import { Link } from "react-router-dom";
 
 import styled from "styled-components";
 
 import { primaryColor, primaryText, secondaryColor } from "../colors/colors";
+
+// Icons
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+
+// Route
+import { Link } from "react-router-dom";
 
 const Wrapper = styled.div`
   height: 100%;
@@ -13,45 +19,53 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  /* height: 100%;
-  background-color: ${primaryColor};
-  display: flex;
-  justify-content: center;
-  align-items: center; */
 `;
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  /* display: flex;
-  height: 50rem;
-  width: 100rem;
-  justify-content: space-around;
-  flex-direction: column; */
 `;
-
-// TODO
-// NavBar for mobile device
-// -> (<-- Back arrow) + About + Projects
 
 // My name container & text
-const NameContainer = styled.div`
-  text-align: center;
-  /* height: "40%";
+const NavBar = styled.div`
   display: flex;
-  flex-direction: column;
-  text-align: center; */
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
-const NameText = styled.p`
-  font-size: 14em;
+const NavBarBack = styled.div`
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const NavBarItem = styled.div`
+  flex: 2;
+  display: flex;
+  justify-content: center;
+
   @media (max-width: 768px) {
-    font-size: 10em;
+    padding: 2rem;
+    flex: 1;
   }
 `;
 
-/* END */
+const NavLink = styled(Link)`
+  font-size: 10em;
+  color: ${primaryText};
+  text-decoration: none;
+  text-align: center;
+  width: 100%;
+  &:hover {
+    color: ${primaryColor};
+    background-color: ${secondaryColor};
+  }
+  @media (max-width: 768px) {
+    font-size: 4em;
+  }
+`;
 
 const GroupContainer = styled.div`
   display: flex;
@@ -67,10 +81,6 @@ const GroupContainer = styled.div`
 const TextContainer = styled.div`
   display: flex;
   padding: 2rem;
-  /* @media (max-width: 768px) {
-      align-items: center;
-      flex-direction: column;
-    } */
 `;
 
 const ImageContainer = styled.div`
@@ -94,9 +104,23 @@ const AboutPage: React.FC<IPage> = (props) => {
   return (
     <Wrapper>
       <Container>
-        <NameContainer>
-          <NameText>About</NameText>
-        </NameContainer>
+        <NavBar>
+          <NavBarBack>
+            <Link to="/">
+              <FontAwesomeIcon
+                size="6x"
+                color={secondaryColor}
+                icon={faArrowLeft}
+              />
+            </Link>
+          </NavBarBack>
+          <NavBarItem>
+            <NavLink to="/about">About</NavLink>
+          </NavBarItem>
+          <NavBarItem>
+            <NavLink to="/projects">Projects</NavLink>
+          </NavBarItem>
+        </NavBar>
         <GroupContainer>
           <TextContainer>
             <p>
