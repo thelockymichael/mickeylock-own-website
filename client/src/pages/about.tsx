@@ -13,35 +13,35 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  /* height: 100%;
+  background-color: ${primaryColor};
+  display: flex;
+  justify-content: center;
+  align-items: center; */
 `;
 
 const Container = styled.div`
   display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  /* display: flex;
   height: 50rem;
   width: 100rem;
   justify-content: space-around;
-  flex-direction: column;
+  flex-direction: column; */
 `;
 
-const NavLink = styled(Link)`
-  font-size: 10em;
-  color: ${primaryText};
-  text-decoration: none;
-  &:hover {
-    color: ${primaryColor};
-    background: ${secondaryColor};
-  }
-  @media (max-width: 768px) {
-    font-size: 10em;
-  }
-`;
+// TODO
+// NavBar for mobile device
+// -> (<-- Back arrow) + About + Projects
 
 // My name container & text
 const NameContainer = styled.div`
-  height: "40%";
+  text-align: center;
+  /* height: "40%";
   display: flex;
   flex-direction: column;
-  text-align: center;
+  text-align: center; */
 `;
 
 const NameText = styled.p`
@@ -49,10 +49,6 @@ const NameText = styled.p`
   @media (max-width: 768px) {
     font-size: 10em;
   }
-`;
-
-const DescText = styled.p`
-  font-size: 2em;
 `;
 
 /* END */
@@ -63,14 +59,14 @@ const GroupContainer = styled.div`
   justify-content: space-around;
   flex-direction: row;
   @media (max-width: 768px) {
-    align-items: center;
+    justify-content: flex-start;
     flex-direction: column;
   }
 `;
 
 const TextContainer = styled.div`
   display: flex;
-  flex: 1;
+  padding: 2rem;
   /* @media (max-width: 768px) {
       align-items: center;
       flex-direction: column;
@@ -79,7 +75,15 @@ const TextContainer = styled.div`
 
 const ImageContainer = styled.div`
   display: flex;
-  flex: 1;
+  padding: 2rem;
+  width: 100%;
+`;
+
+const ProfileImage = styled.img`
+  display: block;
+  @media (max-width: 768px) {
+    max-width: 100% !important;
+  }
 `;
 
 const AboutPage: React.FC<IPage> = (props) => {
@@ -113,7 +117,7 @@ const AboutPage: React.FC<IPage> = (props) => {
             </p>
           </TextContainer>
           <ImageContainer>
-            <img
+            <ProfileImage
               alt="profile"
               src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
             />
