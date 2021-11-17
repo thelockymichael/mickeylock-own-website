@@ -12,7 +12,7 @@
     "heroku-postbuild": "cd client && npm install && npm install --only=dev --no-shrinkwrap && npm run build",
     "start": "node build/index.js",
     "watch": "nodemon index.ts",
-    "test": "jest --coverage",
+    "test": "jest --verbose",
     "test:watch": "jest --watch"
   },
   "keywords": [],

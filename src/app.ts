@@ -4,6 +4,9 @@ import path from "path";
 
 const app: Application = express();
 
+// TODO
+// User registration / login
+
 // Serve static client app
 
 // Add a list of allowed origins.
@@ -37,8 +40,7 @@ app.use((req, res, next) => {
 
 app.use(express.static(path.join(__dirname, "../client/build/")));
 
-app.get("/hello", (req: Request, res: Response) => {
-  res.send("Hello World !");
-});
+// TODO
+// START HERE
 
 export default app;
