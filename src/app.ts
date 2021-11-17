@@ -4,6 +4,9 @@ import path from "path";
 
 const app: Application = express();
 
+// TODO
+// User registration / login
+
 // Serve static client app
 
 // Add a list of allowed origins.

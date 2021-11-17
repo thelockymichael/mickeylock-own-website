@@ -9,7 +9,6 @@ import {
   primaryShade,
   primaryText,
   secondaryColor,
-  secondaryShade,
 } from "../colors/colors";
 
 // Icons

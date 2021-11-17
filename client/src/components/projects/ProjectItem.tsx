@@ -14,14 +14,9 @@ import {
 
 // Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowLeft,
-  faCaretDown,
-  faCaretUp,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
 
 // Route
-import { Link } from "react-router-dom";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 const ListItem = styled.div`
@@ -157,7 +152,7 @@ const AHref = styled.a`
 
 export type IProjectItemProps = {};
 
-const ProjectItem: React.FC<IProjectItemProps> = ({}) => {
+const ProjectItem: React.FC<IProjectItemProps> = () => {
   const [show, setShow] = useState<boolean>(false);
 
   return (

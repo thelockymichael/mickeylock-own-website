@@ -102,12 +102,6 @@ const ListContainer = styled.div`
   }
 `;
 
-const ListItem = styled.div`
-  background: ${primaryShade};
-  font-size: 2rem;
-  text-align: center;
-`;
-
 const ListItemImg = styled.div``;
 
 const Image = styled.img`
