@@ -5,6 +5,7 @@ import logging from "../config/logging";
 import styled from "styled-components";
 
 import {
+  infoSectColor,
   primaryColor,
   primaryShade,
   primaryText,
@@ -20,6 +21,7 @@ import { faArrowLeft, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 // Route
 import { Link } from "react-router-dom";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
+import { ProjectItem } from "../components";
 
 const Wrapper = styled.div`
   height: 100%;
@@ -145,6 +147,19 @@ const TagItem = styled.div`
   text-align: center;
 `;
 
+const InfoSection = styled.div`
+  background-color: ${infoSectColor};
+  width: 100%;
+  height: 100%;
+`;
+
+const InfoText = styled.p`
+  font-size: 1em;
+  color: ${primaryText};
+  text-align: left;
+  padding: 1rem;
+`;
+
 const IconContainer = styled.div`
   display: flex;
   padding: 0rem 2rem;
@@ -224,7 +239,7 @@ const AboutPage: React.FC<IPage> = (props) => {
           <Breakline />
         </NavBar>
         <ListContainer>
-          <ListItem>
+          <ProjectItem>
             <ListItemImg>
               <Image
                 alt="background"
@@ -263,131 +278,22 @@ const AboutPage: React.FC<IPage> = (props) => {
                 <TagItem>Firebase</TagItem>
                 <TagItem>Google APIs</TagItem>
               </TagContainer>
+              <InfoSection>
+                <InfoText>
+                  Sed eu semper turpis. Mauris felis massa, pretium eu neque
+                  interdum, pretium scelerisque nunc. Cras imperdiet sapien ut
+                  arcu bibendum, sed lobortis dolor elementum. In auctor eros
+                  non lorem aliquam, a sollicitudin risus pharetra. Nam eu risus
+                  vehicula, scelerisque eros in, placerat nibh. Donec placerat
+                  tellus at augue posuere feugiat. Curabitur eu vulputate
+                  sapien, vitae tristique est.
+                </InfoText>
+              </InfoSection>
             </ListItemRows>
-          </ListItem>
-          <ListItem>
-            <ListItemImg>
-              <Image
-                alt="background"
-                src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
-              />
-            </ListItemImg>
-            <ListItemRows>
-              <ListItemTop>
-                <IconContainer>
-                  <FontAwesomeIcon
-                    size="3x"
-                    color={secondaryColor}
-                    icon={faCaretDown}
-                  />
-                </IconContainer>
-                <TitleGithubButton>
-                  <TitleContainer>
-                    <TitleText>VehoGO</TitleText>
-                  </TitleContainer>
-                  <div>
-                    <AHref href="https://github.com/">
-                      <GitHubButton>
-                        <FontAwesomeIcon
-                          size="2x"
-                          color={secondaryColor}
-                          icon={faGithub}
-                        />
-                        <GitHubText>GitHub</GitHubText>
-                      </GitHubButton>
-                    </AHref>
-                  </div>
-                </TitleGithubButton>
-              </ListItemTop>
-              <TagContainer>
-                <TagItem>React Native</TagItem>
-                <TagItem>Firebase</TagItem>
-                <TagItem>Google APIs</TagItem>
-              </TagContainer>
-            </ListItemRows>
-          </ListItem>
-          <ListItem>
-            <ListItemImg>
-              <Image
-                alt="background"
-                src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
-              />
-            </ListItemImg>
-            <ListItemRows>
-              <ListItemTop>
-                <IconContainer>
-                  <FontAwesomeIcon
-                    size="3x"
-                    color={secondaryColor}
-                    icon={faCaretDown}
-                  />
-                </IconContainer>
-                <TitleGithubButton>
-                  <TitleContainer>
-                    <TitleText>VehoGO</TitleText>
-                  </TitleContainer>
-                  <div>
-                    <AHref href="https://github.com/">
-                      <GitHubButton>
-                        <FontAwesomeIcon
-                          size="2x"
-                          color={secondaryColor}
-                          icon={faGithub}
-                        />
-                        <GitHubText>GitHub</GitHubText>
-                      </GitHubButton>
-                    </AHref>
-                  </div>
-                </TitleGithubButton>
-              </ListItemTop>
-              <TagContainer>
-                <TagItem>React Native</TagItem>
-                <TagItem>Firebase</TagItem>
-                <TagItem>Google APIs</TagItem>
-              </TagContainer>
-            </ListItemRows>
-          </ListItem>
-          <ListItem>
-            <ListItemImg>
-              <Image
-                alt="background"
-                src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
-              />
-            </ListItemImg>
-            <ListItemRows>
-              <ListItemTop>
-                <IconContainer>
-                  <FontAwesomeIcon
-                    size="3x"
-                    color={secondaryColor}
-                    icon={faCaretDown}
-                  />
-                </IconContainer>
-                <TitleGithubButton>
-                  <TitleContainer>
-                    <TitleText>VehoGO</TitleText>
-                  </TitleContainer>
-                  <div>
-                    <AHref href="https://github.com/">
-                      <GitHubButton>
-                        <FontAwesomeIcon
-                          size="2x"
-                          color={secondaryColor}
-                          icon={faGithub}
-                        />
-                        <GitHubText>GitHub</GitHubText>
-                      </GitHubButton>
-                    </AHref>
-                  </div>
-                </TitleGithubButton>
-              </ListItemTop>
-              <TagContainer>
-                <TagItem>React Native</TagItem>
-                <TagItem>Firebase</TagItem>
-                <TagItem>Google APIs</TagItem>
-              </TagContainer>
-            </ListItemRows>
-          </ListItem>
+          </ProjectItem>
+
+          <ProjectItem />
+          <ProjectItem />
         </ListContainer>
       </Container>
     </Wrapper>
