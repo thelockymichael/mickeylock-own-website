@@ -40,8 +40,7 @@ app.use((req, res, next) => {
 
 app.use(express.static(path.join(__dirname, "../client/build/")));
 
-app.get("/hello", (req: Request, res: Response) => {
-  res.send("Hello World !");
-});
+// TODO
+// START HERE
 
 export default app;
