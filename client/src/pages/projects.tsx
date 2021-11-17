@@ -9,14 +9,17 @@ import {
   primaryShade,
   primaryText,
   secondaryColor,
+  secondaryText,
+  tagColor,
 } from "../colors/colors";
 
 // Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
 // Route
 import { Link } from "react-router-dom";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 const Wrapper = styled.div`
   height: 100%;
@@ -84,26 +87,113 @@ const Breakline = styled.div`
   background-color: ${primaryShade};
 `;
 
-const GroupContainer = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: space-around;
-  flex-direction: row;
+const ListContainer = styled.div`
+  display: grid;
+  margin: 2rem 2rem;
+  grid-auto-columns: minmax(60rem, auto);
+  grid-template-columns: repeat(auto-fill, minmax(60rem, 1fr));
+  grid-gap: 2rem;
+
   @media (max-width: 768px) {
-    justify-content: flex-start;
-    flex-direction: column;
+    grid-auto-columns: minmax(60rem, auto);
+    grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
   }
 `;
 
-// TODO
+const ListItem = styled.div`
+  background: ${primaryShade};
+  font-size: 2rem;
+  text-align: center;
+`;
 
-// 1. ListContainer
-// 2. ListItem -->
-// * flexbox order:
-// flex-direction: column,
-// 1. row: image
-// 2. row: dropdown-icon VEHO go (project name) Link to github
-// *
+const ListItemImg = styled.div``;
+
+const Image = styled.img`
+  display: block;
+  width: 100%;
+
+  /* @media (max-width: 768px) {
+    max-width: 100% !important;
+  } */
+`;
+
+const ListItemRows = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+// TOP
+const ListItemTop = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+const TagContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  margin: 1.5rem 1.5rem;
+`;
+
+const TagItem = styled.div`
+  margin: 0.5rem;
+  background: ${tagColor};
+  color: ${secondaryText};
+  padding: 1rem;
+  border-radius: 1rem;
+  font-size: 2rem;
+  text-align: center;
+`;
+
+const IconContainer = styled.div`
+  display: flex;
+  padding: 0rem 2rem;
+`;
+
+const TitleGithubButton = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 2rem 2rem;
+  justify-content: space-between;
+`;
+
+const TitleContainer = styled.div``;
+
+const TitleText = styled.p`
+  font-size: 2em;
+  color: ${primaryText};
+  @media (max-width: 768px) {
+    font-size: 1em;
+  }
+`;
+
+const GitHubButton = styled.div`
+  display: flex;
+  align-items: center;
+  background-color: ${primaryColor};
+  border-radius: 2rem;
+  width: 100%;
+  padding: 1rem;
+`;
+
+const GitHubText = styled.p`
+  font-size: 2em;
+  @media (max-width: 768px) {
+    font-size: 0.5em;
+  }
+`;
+
+const AHref = styled.a`
+  color: ${primaryText};
+  text-decoration: none;
+  text-align: center;
+  width: 100%;
+  /* &:hover {
+    color: ${primaryColor};
+    background-color: ${secondaryColor};
+  } */
+`;
 
 const AboutPage: React.FC<IPage> = (props) => {
   useEffect(() => {
@@ -133,7 +223,172 @@ const AboutPage: React.FC<IPage> = (props) => {
           </NavBarItem>
           <Breakline />
         </NavBar>
-        <GroupContainer></GroupContainer>
+        <ListContainer>
+          <ListItem>
+            <ListItemImg>
+              <Image
+                alt="background"
+                src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
+              />
+            </ListItemImg>
+            <ListItemRows>
+              <ListItemTop>
+                <IconContainer>
+                  <FontAwesomeIcon
+                    size="3x"
+                    color={secondaryColor}
+                    icon={faCaretDown}
+                  />
+                </IconContainer>
+                <TitleGithubButton>
+                  <TitleContainer>
+                    <TitleText>VehoGO</TitleText>
+                  </TitleContainer>
+                  <div>
+                    <AHref href="https://github.com/">
+                      <GitHubButton>
+                        <FontAwesomeIcon
+                          size="2x"
+                          color={secondaryColor}
+                          icon={faGithub}
+                        />
+                        <GitHubText>GitHub</GitHubText>
+                      </GitHubButton>
+                    </AHref>
+                  </div>
+                </TitleGithubButton>
+              </ListItemTop>
+              <TagContainer>
+                <TagItem>React Native</TagItem>
+                <TagItem>Firebase</TagItem>
+                <TagItem>Google APIs</TagItem>
+              </TagContainer>
+            </ListItemRows>
+          </ListItem>
+          <ListItem>
+            <ListItemImg>
+              <Image
+                alt="background"
+                src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
+              />
+            </ListItemImg>
+            <ListItemRows>
+              <ListItemTop>
+                <IconContainer>
+                  <FontAwesomeIcon
+                    size="3x"
+                    color={secondaryColor}
+                    icon={faCaretDown}
+                  />
+                </IconContainer>
+                <TitleGithubButton>
+                  <TitleContainer>
+                    <TitleText>VehoGO</TitleText>
+                  </TitleContainer>
+                  <div>
+                    <AHref href="https://github.com/">
+                      <GitHubButton>
+                        <FontAwesomeIcon
+                          size="2x"
+                          color={secondaryColor}
+                          icon={faGithub}
+                        />
+                        <GitHubText>GitHub</GitHubText>
+                      </GitHubButton>
+                    </AHref>
+                  </div>
+                </TitleGithubButton>
+              </ListItemTop>
+              <TagContainer>
+                <TagItem>React Native</TagItem>
+                <TagItem>Firebase</TagItem>
+                <TagItem>Google APIs</TagItem>
+              </TagContainer>
+            </ListItemRows>
+          </ListItem>
+          <ListItem>
+            <ListItemImg>
+              <Image
+                alt="background"
+                src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
+              />
+            </ListItemImg>
+            <ListItemRows>
+              <ListItemTop>
+                <IconContainer>
+                  <FontAwesomeIcon
+                    size="3x"
+                    color={secondaryColor}
+                    icon={faCaretDown}
+                  />
+                </IconContainer>
+                <TitleGithubButton>
+                  <TitleContainer>
+                    <TitleText>VehoGO</TitleText>
+                  </TitleContainer>
+                  <div>
+                    <AHref href="https://github.com/">
+                      <GitHubButton>
+                        <FontAwesomeIcon
+                          size="2x"
+                          color={secondaryColor}
+                          icon={faGithub}
+                        />
+                        <GitHubText>GitHub</GitHubText>
+                      </GitHubButton>
+                    </AHref>
+                  </div>
+                </TitleGithubButton>
+              </ListItemTop>
+              <TagContainer>
+                <TagItem>React Native</TagItem>
+                <TagItem>Firebase</TagItem>
+                <TagItem>Google APIs</TagItem>
+              </TagContainer>
+            </ListItemRows>
+          </ListItem>
+          <ListItem>
+            <ListItemImg>
+              <Image
+                alt="background"
+                src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
+              />
+            </ListItemImg>
+            <ListItemRows>
+              <ListItemTop>
+                <IconContainer>
+                  <FontAwesomeIcon
+                    size="3x"
+                    color={secondaryColor}
+                    icon={faCaretDown}
+                  />
+                </IconContainer>
+                <TitleGithubButton>
+                  <TitleContainer>
+                    <TitleText>VehoGO</TitleText>
+                  </TitleContainer>
+                  <div>
+                    <AHref href="https://github.com/">
+                      <GitHubButton>
+                        <FontAwesomeIcon
+                          size="2x"
+                          color={secondaryColor}
+                          icon={faGithub}
+                        />
+                        <GitHubText>GitHub</GitHubText>
+                      </GitHubButton>
+                    </AHref>
+                  </div>
+                </TitleGithubButton>
+              </ListItemTop>
+              <TagContainer>
+                <TagItem>React Native</TagItem>
+                <TagItem>Firebase</TagItem>
+                <TagItem>Google APIs</TagItem>
+              </TagContainer>
+            </ListItemRows>
+          </ListItem>
+        </ListContainer>
       </Container>
     </Wrapper>
   );
