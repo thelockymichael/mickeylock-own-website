@@ -2,12 +2,12 @@ import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import path from "path";
 
+import mongoose from "mongoose";
+
+import { todoRouter } from "./routes/todo";
+import config from "./utils/config";
+
 const app: Application = express();
-
-// TODO
-// User registration / login
-
-// Serve static client app
 
 // Add a list of allowed origins.
 // If you have more origins you would like to add, you can add them to the array below.
@@ -42,5 +42,21 @@ app.use(express.static(path.join(__dirname, "../client/build/")));
 
 // TODO
 // START HERE
+
+// TODO
+// User registration / login
+
+app.use(todoRouter);
+
+console.log("mongo url", config.MONGO_URI);
+
+mongoose
+  .connect(config.MONGO_URI)
+  .then((result) => {
+    console.log("connected to MongoDB");
+  })
+  .catch((error) => {
+    console.log("error connecting to MongoDB:", error.message);
+  });
 
 export default app;

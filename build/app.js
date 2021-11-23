@@ -6,21 +6,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var cors_1 = __importDefault(require("cors"));
 var path_1 = __importDefault(require("path"));
-var app = (0, express_1.default)();
-// Serve static client app
+var app = express_1.default();
+// TODO
+// User registration / login
 // Add a list of allowed origins.
 // If you have more origins you would like to add, you can add them to the array below.
 var allowedOrigins = ["http://localhost:3000"]; // Not sure, if I need this line
 var options = {
     origin: allowedOrigins,
 };
-app.use((0, cors_1.default)(options));
+app.use(cors_1.default(options));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use(function (req, res, next) {
     var _a;
-    console.log("req.headers.host", req.headers.host);
-    console.log("req.url", req.url);
     if (process.env.NODE_ENV === "production") {
         if (((_a = req.headers.host) === null || _a === void 0 ? void 0 : _a.slice(0, 4)) === "www.") {
             var newHost = req.headers.host.slice(4);
@@ -37,7 +36,6 @@ app.use(function (req, res, next) {
         return next();
 });
 app.use(express_1.default.static(path_1.default.join(__dirname, "../client/build/")));
-app.get("/hello", function (req, res) {
-    res.send("Hello World !");
-});
+// TODO
+// START HERE
 exports.default = app;
