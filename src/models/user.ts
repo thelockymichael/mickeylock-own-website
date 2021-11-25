@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-interface ITodo {
+interface IUser {
   title: string;
   description: string;
 }

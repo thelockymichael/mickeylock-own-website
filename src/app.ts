@@ -7,6 +7,13 @@ import mongoose from "mongoose";
 import { todoRouter } from "./routes/todo";
 import config from "./utils/config";
 
+// Middleware
+import {
+  unknownEndpoint,
+  errorHandler,
+  requestLogger,
+} from "./utils/middlware";
+
 const app: Application = express();
 
 // Add a list of allowed origins.
@@ -20,6 +27,15 @@ const options: cors.CorsOptions = {
 app.use(cors(options));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+mongoose
+  .connect(config.MONGO_URI)
+  .then((result) => {
+    console.log("connected to MongoDB");
+  })
+  .catch((error) => {
+    console.log("error connecting to MongoDB:", error.message);
+  });
 
 app.use((req, res, next) => {
   if (process.env.NODE_ENV === "production") {
@@ -46,17 +62,15 @@ app.use(express.static(path.join(__dirname, "../client/build/")));
 // TODO
 // User registration / login
 
+// Middleware
+app.use(requestLogger);
+
 app.use(todoRouter);
 
-console.log("mongo url", config.MONGO_URI);
+// Handle requests with unknown endpoint
+app.use(unknownEndpoint);
 
-mongoose
-  .connect(config.MONGO_URI)
-  .then((result) => {
-    console.log("connected to MongoDB");
-  })
-  .catch((error) => {
-    console.log("error connecting to MongoDB:", error.message);
-  });
+// Last loaded middleware
+app.use(errorHandler);
 
 export default app;

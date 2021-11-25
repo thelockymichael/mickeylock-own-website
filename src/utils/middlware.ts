@@ -1,4 +1,4 @@
-import { ErrorRequestHandler, Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import * as logger from "./logger";
 
 const requestLogger = (
@@ -13,9 +13,9 @@ const requestLogger = (
   next();
 };
 
-// const unknownEndpoint = (request, response) => {
-//   response.status(404).send({error: 'unknown endpoint'})
-// }
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: "unknown endpoint" });
+};
 
 const errorHandler = (
   error: any,
@@ -23,7 +23,7 @@ const errorHandler = (
   response: Response,
   next: NextFunction
 ) => {
-  logger.error(error.message);
+  logger.error("ERROR MSG", error.message);
 
   if (error.name === "CastError" && error.kind === "ObjectId") {
     return response.status(400).send({ error: "malformatted id" });
@@ -35,13 +35,7 @@ const errorHandler = (
     });
   }
 
-  logger.error(error.message);
-
   next(error);
 };
 
-module.exports = {
-  requestLogger,
-  // unknownEndpoint,
-  errorHandler,
-};
+export { requestLogger, unknownEndpoint, errorHandler };
