@@ -1,6 +1,13 @@
 import mongoose from "mongoose";
 
-interface IUser {
+// TODO User Model
+/*
+* name
+
+
+*/
+
+interface ITodo {
   title: string;
   description: string;
 }
