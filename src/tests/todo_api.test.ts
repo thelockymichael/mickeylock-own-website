@@ -4,6 +4,8 @@ import app from "../app";
 import * as helper from "../tests/helpers/test_helper";
 import { ITodo, Todo } from "../models/todo";
 
+jest.setTimeout(10000);
+
 const api = supertest(app);
 
 beforeEach(async () => {

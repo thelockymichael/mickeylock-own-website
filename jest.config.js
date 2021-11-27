@@ -3,5 +3,3 @@ module.exports = {
   testEnvironment: "node",
   setupFiles: ["dotenv/config"],
 };
-
-jest.setTimeout(10000);
