@@ -13,6 +13,7 @@ import {
   errorHandler,
   requestLogger,
 } from "./utils/middlware";
+import { userRouter } from "./routes";
 
 const app: Application = express();
 
@@ -65,7 +66,11 @@ app.use(express.static(path.join(__dirname, "../client/build/")));
 // Middleware
 app.use(requestLogger);
 
+// TODO test TypeScript router
 app.use(todoRouter);
+
+// User router
+app.use(userRouter);
 
 // Handle requests with unknown endpoint
 app.use(unknownEndpoint);

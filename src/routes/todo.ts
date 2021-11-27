@@ -1,6 +1,7 @@
 import express, { NextFunction, Request, response, Response } from "express";
-import { nextTick } from "process";
 import { Todo } from "../models/todo";
+
+require("express-async-errors");
 
 const router = express.Router();
 
@@ -13,24 +14,26 @@ router.get("/api/todo", async (req: Request, res: Response) => {
 router.get(
   "/api/todo/:id",
   async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const todo = await Todo.findById(req.params.id);
+    const { id } = req.params;
 
-      return todo ? response.json(todo) : response.status(404).end();
-    } catch (error: any) {
-      console.log("WAT IS THIS?");
-      next(error);
-    }
+    const todo = await Todo.findById(id);
+
+    // TODO
+    // !!! Setup eslint . !!!
+
+    return todo ? res.json(todo.toJSON()) : res.status(404).end();
   }
 );
 
-router.post("/api/todo", async (req, res) => {
-  const { title, description } = req.body;
+router.post(
+  "/api/todo",
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { title, description } = req.body;
 
-  const todo = Todo.build({ title, description });
-  await todo.save();
-
-  return res.status(201).send(todo);
-});
+    const todo = Todo.build({ title, description });
+    await todo.save();
+    return res.status(200).send(todo);
+  }
+);
 
 export { router as todoRouter };

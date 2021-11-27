@@ -1,52 +1,69 @@
 import mongoose from "mongoose";
 
-// TODO User Model
+// User User Model
 /*
-* name
+About:
+* fullName: string
+* CV Image: uploads (sharp)
+* About text
+Projects:
+projects: [project: IProject]
+
 
 
 */
 
-interface ITodo {
-  title: string;
-  description: string;
+interface IUser {
+  fullName: string;
+  passwordHash: string;
+  about: string;
+  profileImage: string;
 }
 
-interface TodoModelInterface extends mongoose.Model<TodoDoc> {
-  build(attr: ITodo): TodoDoc;
+interface UserModelInterface extends mongoose.Model<UserDoc> {
+  build(attr: IUser): UserDoc;
 }
 
-interface TodoDoc extends mongoose.Document {
-  title: string;
-  description: string;
+interface UserDoc extends mongoose.Document {
+  fullName: string;
+  passwordHash: string;
+  about: string;
+  profileImage: string;
+  // projects: [Project];
 }
 
-const todoSchema = new mongoose.Schema({
-  title: {
+const userSchema = new mongoose.Schema({
+  fullName: {
     type: String,
     required: true,
   },
-  description: {
+  passwordHash: {
+    type: String,
+    required: true,
+  },
+  about: {
+    type: String,
+    required: true,
+  },
+  profileImage: {
     type: String,
     required: true,
   },
 });
 
-todoSchema.set("toJSON", {
+userSchema.set("toJSON", {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;
+
+    // the passwordHash should not be revealed
+    delete returnedObject.passwordHash;
   },
 });
 
-todoSchema.statics.build = (attr: ITodo) => new Todo(attr);
+userSchema.statics.build = (attr: IUser) => new User(attr);
 
-const Todo = mongoose.model<TodoDoc, TodoModelInterface>("Todo", todoSchema);
+const User = mongoose.model<UserDoc, UserModelInterface>("User", userSchema);
 
-Todo.build({
-  title: "Terve",
-  description: "Hello",
-});
-
-export { Todo };
+export { User };

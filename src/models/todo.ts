@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-interface ITodo {
+export interface ITodo {
   title: string;
   description: string;
 }
@@ -36,10 +36,5 @@ todoSchema.set("toJSON", {
 todoSchema.statics.build = (attr: ITodo) => new Todo(attr);
 
 const Todo = mongoose.model<TodoDoc, TodoModelInterface>("Todo", todoSchema);
-
-Todo.build({
-  title: "Terve",
-  description: "Hello",
-});
 
 export { Todo };

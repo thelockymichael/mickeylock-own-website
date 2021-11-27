@@ -12,12 +12,14 @@ interface ENV {
   NODE_ENV: string | undefined;
   PORT: number | undefined;
   MONGO_URI: string | undefined;
+  TEST_MONGO_URI: string | undefined;
 }
 
 interface Config {
   NODE_ENV: string;
   PORT: number;
   MONGO_URI: string;
+  TEST_MONGO_URI: string;
 }
 
 // Loading process.env as ENV interface
@@ -26,7 +28,11 @@ const getConfig = (): ENV => {
   return {
     NODE_ENV: process.env.NODE_ENV,
     PORT: process.env.PORT ? Number(process.env.PORT) : undefined,
-    MONGO_URI: process.env.MONGO_URI,
+    MONGO_URI:
+      process.env.NODE_ENV !== "test"
+        ? process.env.MONGO_URI
+        : process.env.TEST_MONGO_URI,
+    TEST_MONGO_URI: process.env.TEST_MONGO_URI,
   };
 };
 
@@ -39,7 +45,7 @@ const getConfig = (): ENV => {
 const getSanitzedConfig = (config: ENV): Config => {
   for (const [key, value] of Object.entries(config)) {
     if (value === undefined) {
-      throw new Error(`Missing key ${key} in config.env`);
+      throw new Error(`Missing key ${key} in .env`);
     }
   }
   return config as Config;
