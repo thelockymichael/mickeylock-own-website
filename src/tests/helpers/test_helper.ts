@@ -1,31 +1,9 @@
-import { ITodo, Todo } from "../../models/todo";
+import { User } from "../../models";
 
-const initialTodos = [
-  {
-    title: "Do the dishes",
-    description: "Dishes are in the kitchen",
-  },
-  {
-    title: "Take out the trash",
-    description: "Trash can is outside.",
-  },
-  {
-    title: "Destroy all humans II",
-    description: "Please don't",
-  },
-];
-
-const nonExistingId = async () => {
-  const todo = new Todo({ content: "willremovethissoon", date: new Date() });
-  await todo.save();
-  await todo.remove();
-
-  return todo._id.toString();
+// Users
+const usersInDb = async () => {
+  const users = await User.find({});
+  return users.map((u) => u.toJSON());
 };
 
-const todosInDb = async () => {
-  const todos = await Todo.find({});
-  return todos.map((todo) => todo.toJSON());
-};
-
-export { initialTodos, nonExistingId, todosInDb };
+export { usersInDb };

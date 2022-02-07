@@ -1,10 +1,9 @@
-import express, { Application, Request, Response } from "express";
+import express, { Application } from "express";
 import cors from "cors";
 import path from "path";
 
 import mongoose from "mongoose";
 
-import { todoRouter } from "./routes/todo";
 import config from "./utils/config";
 
 // Middleware
@@ -13,7 +12,7 @@ import {
   errorHandler,
   requestLogger,
 } from "./utils/middlware";
-import { userRouter } from "./routes";
+import { userRouter, projectRouter } from "./routes";
 
 const app: Application = express();
 
@@ -66,11 +65,11 @@ app.use(express.static(path.join(__dirname, "../client/build/")));
 // Middleware
 app.use(requestLogger);
 
-// TODO test TypeScript router
-app.use(todoRouter);
-
 // User router
-app.use(userRouter);
+app.use("/api/user", userRouter);
+
+// Project router
+app.use("/api/project", projectRouter);
 
 // Handle requests with unknown endpoint
 app.use(unknownEndpoint);

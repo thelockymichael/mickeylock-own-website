@@ -1,39 +1,52 @@
-import express, { NextFunction, Request, response, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
-import { User } from "../models/user";
+import { User } from "../models";
 
 const router = express.Router();
 
-router.get("/api/user", async (req: Request, res: Response) => {
-  const user = await User.find({});
+router.get("/", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user = await User.find({}).populate("projects");
 
-  return res.status(200).send(user);
-});
-
-router.get(
-  "/api/user/:id",
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const user = await User.findById(req.params.id);
-
-      return user ? response.json(user) : response.status(404).end();
-    } catch (error: any) {
-      console.log("WAT IS THIS?");
-      next(error);
-    }
+    return res.status(200).send(user);
+  } catch (error: any) {
+    next(error);
   }
-);
-
-router.post("/api/user", async (req: Request, res: Response) => {
-  const { fullName, password, about, profileImage } = req.body;
-
-  const saltRounds = 10;
-  const passwordHash = await bcrypt.hash(password, saltRounds);
-
-  const user = User.build({ fullName, passwordHash, about, profileImage });
-  await user.save();
-
-  return res.status(201).send(user);
 });
+
+router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user = await User.findById(req.params.id).populate("projects");
+
+    return user ? res.json(user) : res.status(404).end();
+  } catch (error: any) {
+    next(error);
+  }
+});
+
+router.post("/", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { fullName, password, about, profileImage } = req.body;
+
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(password, saltRounds);
+
+    const user = User.build({
+      fullName,
+      password: passwordHash,
+      about,
+      profileImage,
+      projects: [],
+    });
+
+    await user.save();
+
+    return res.status(200).send(user);
+  } catch (error: any) {
+    next(error);
+  }
+});
+
+router;
 
 export { router as userRouter };

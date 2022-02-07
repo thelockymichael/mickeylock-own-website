@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import uniqueValidator from "mongoose-unique-validator";
+import { IProject } from "./index";
 
 // User User Model
 /*
@@ -14,10 +16,12 @@ projects: [project: IProject]
 */
 
 interface IUser {
+  _id?: string;
   fullName: string;
-  passwordHash: string;
+  password: string;
   about: string;
   profileImage: string;
+  projects: Array<IProject>;
 }
 
 interface UserModelInterface extends mongoose.Model<UserDoc> {
@@ -25,30 +29,38 @@ interface UserModelInterface extends mongoose.Model<UserDoc> {
 }
 
 interface UserDoc extends mongoose.Document {
+  _id?: string;
   fullName: string;
-  passwordHash: string;
+  password: string;
   about: string;
   profileImage: string;
-  // projects: [Project];
+  projects: Array<IProject>;
 }
 
 const userSchema = new mongoose.Schema({
   fullName: {
     type: String,
     required: true,
+    unique: true,
   },
-  passwordHash: {
+  password: {
     type: String,
     required: true,
   },
   about: {
     type: String,
-    required: true,
+    required: false,
   },
   profileImage: {
     type: String,
-    required: true,
+    required: false,
   },
+  projects: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Project",
+    },
+  ],
 });
 
 userSchema.set("toJSON", {
@@ -57,13 +69,15 @@ userSchema.set("toJSON", {
     delete returnedObject._id;
     delete returnedObject.__v;
 
-    // the passwordHash should not be revealed
-    delete returnedObject.passwordHash;
+    // the hashed password should not be revealed
+    delete returnedObject.password;
   },
 });
+
+userSchema.plugin(uniqueValidator);
 
 userSchema.statics.build = (attr: IUser) => new User(attr);
 
 const User = mongoose.model<UserDoc, UserModelInterface>("User", userSchema);
 
-export { User };
+export { User, IUser };
