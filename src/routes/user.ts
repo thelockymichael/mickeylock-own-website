@@ -1,6 +1,8 @@
-import express, { NextFunction, Request, Response } from "express";
+import express, { NextFunction, Request, response, Response } from "express";
 import bcrypt from "bcrypt";
 import { User } from "../models";
+import { getTokenFrom } from "../utils/auth";
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
@@ -24,27 +26,54 @@ router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
-router.post("/", async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { fullName, password, about, profileImage } = req.body;
+router.post(
+  "/register",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // TODO
+      // 1. IF no USER --> create ONE user
+      // 2. IF 1 USER --> user must be logged in to register
+      //    other users.
+      // 3. REGISTER other user
+      const findOneUser = await User.findOne({});
 
-    const saltRounds = 10;
-    const passwordHash = await bcrypt.hash(password, saltRounds);
+      if (findOneUser) {
+        console.log("findOneUser", findOneUser);
 
-    const user = User.build({
-      fullName,
-      password: passwordHash,
-      about,
-      profileImage,
-      projects: [],
-    });
+        const token = getTokenFrom(req);
+        console.log("token", token);
 
-    await user.save();
+        const decodedToken = jwt.verify(token, process.env.SECRET);
+        if (!token || !decodedToken.id) {
+          return response
+            .status(401)
+            .json({ error: "token missing or invalid" });
+        }
+      }
 
-    return res.status(200).send(user);
-  } catch (error: any) {
-    next(error);
+      const { fullName, password, about, profileImage } = req.body;
+
+      const saltRounds = 10;
+      const passwordHash = await bcrypt.hash(password, saltRounds);
+
+      const user = User.build({
+        fullName,
+        passwordHash,
+        about,
+        profileImage,
+        projects: [],
+      });
+
+      await user.save();
+
+      return res.status(200).send(user);
+    } catch ({ message }) {
+      res.status(401).json({
+        user: null,
+        error: message,
+      });
+    }
   }
-});
+);
 
 export { router as userRouter };

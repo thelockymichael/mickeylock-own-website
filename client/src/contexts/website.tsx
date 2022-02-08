@@ -16,10 +16,6 @@ const WebsiteContext = createContext<IWebsiteContext>(defaultState);
 const WebsiteProvider: React.FC = ({ children }) => {
   const [website, setWebsite] = useState<IWebsite>(defaultState.website);
 
-  // const assignWebsite = (website: IWebsite) => {
-  //   setWebsite(website);
-  // };
-
   return (
     <WebsiteContext.Provider
       value={{

@@ -12,7 +12,12 @@ import {
   errorHandler,
   requestLogger,
 } from "./utils/middlware";
-import { userRouter, websiteRouter, projectRouter } from "./routes";
+import {
+  userRouter,
+  websiteRouter,
+  projectRouter,
+  loginRouter,
+} from "./routes";
 
 const app: Application = express();
 
@@ -65,10 +70,14 @@ app.use(express.static(path.join(__dirname, "../client/build/")));
 // Middleware
 app.use(requestLogger);
 
+// Website router
 app.use("/api/website", websiteRouter);
 
 // User router
 app.use("/api/user", userRouter);
+
+// Login router
+app.use("/api/login", loginRouter);
 
 // Project router
 app.use("/api/project", projectRouter);

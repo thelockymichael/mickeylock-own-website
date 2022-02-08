@@ -5,7 +5,7 @@ import { IProject } from "./index";
 interface IUser {
   _id?: string;
   fullName: string;
-  password: string;
+  passwordHash: string;
   about: string;
   profileImage: string;
   projects: Array<IProject>;
@@ -18,7 +18,7 @@ interface UserModelInterface extends mongoose.Model<UserDoc> {
 interface UserDoc extends mongoose.Document {
   _id?: string;
   fullName: string;
-  password: string;
+  passwordHash: string;
   about: string;
   profileImage: string;
   projects: Array<IProject>;
@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  password: {
+  passwordHash: {
     type: String,
     required: true,
   },
@@ -57,7 +57,7 @@ userSchema.set("toJSON", {
     delete returnedObject.__v;
 
     // the hashed password should not be revealed
-    delete returnedObject.password;
+    delete returnedObject.passwordHash;
   },
 });
 
