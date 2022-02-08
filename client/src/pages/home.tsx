@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { primaryColor, primaryText, secondaryColor } from "../colors/colors";
+import { useWebsiteContext } from "../hooks/website";
 
 const Wrapper = styled.div`
   height: 100%;
@@ -72,6 +73,14 @@ const HomePage: React.FC<IPage> = (props) => {
   useEffect(() => {
     logging.info(`Loading ${props.name}`);
   }, [props.name]);
+
+  const { website, getWebsite } = useWebsiteContext();
+
+  useEffect(() => {
+    console.log("website", website);
+
+    getWebsite();
+  }, []); // TODOD website dependency should work ?
 
   return (
     <Wrapper>

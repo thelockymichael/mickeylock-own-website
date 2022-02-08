@@ -2,19 +2,6 @@ import mongoose from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
 import { IProject } from "./index";
 
-// User User Model
-/*
-About:
-* fullName: string
-* CV Image: uploads (sharp)
-* About text
-Projects:
-projects: [project: IProject]
-
-
-
-*/
-
 interface IUser {
   _id?: string;
   fullName: string;

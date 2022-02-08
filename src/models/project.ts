@@ -3,6 +3,7 @@ import uniqueValidator from "mongoose-unique-validator";
 import { IUser } from ".";
 
 interface IProject {
+  _id?: string;
   name: string;
   description: string;
   tags?: string[];
@@ -18,6 +19,7 @@ interface ProjectModelInterface extends mongoose.Model<ProjectDoc> {
 }
 
 interface ProjectDoc extends mongoose.Document {
+  _id?: string;
   name: string;
   description: string;
   tags?: string[];
