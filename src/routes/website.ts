@@ -1,6 +1,10 @@
 import express, { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
-import { Website } from "../models";
+import { IWebsite, Website } from "../models";
+
+interface CustomRequest<T> extends Request {
+  body: T;
+}
 
 const router = express.Router();
 
@@ -14,6 +18,8 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
+// TODO
+// Don't remove. Might need this later
 // router.post("/", async (req: Request, res: Response, next: NextFunction) => {
 //   try {
 //     const { name, descText, aboutText, profileImage, projects } = req.body;
@@ -26,44 +32,33 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
 //       projects,
 //     });
 
-//     const savedWebsite = await website.save();
+/* END */
 
-//     return res.status(200).send(savedWebsite);
-//   } catch (error: any) {
-//     next(error);
-//   }
-// });
+// 4. UPDATE single item
+router.put(
+  "/:id",
+  async (req: CustomRequest<IWebsite>, res: Response, next: NextFunction) => {
+    try {
+      // const { name, score } = req.body;
+      const updateWebsite = req.body;
 
-// router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
-//   try {
-//     const website = await Website.findById(req.params.id).populate("projects");
+      const website = await Website.findByIdAndUpdate(
+        req.params.id,
+        updateWebsite,
+        { new: true }
+      );
 
-//     return website ? res.json(website) : res.status(404).end();
-//   } catch (error: any) {
-//     next(error);
-//   }
-// });
-
-// router.post("/", async (req: Request, res: Response, next: NextFunction) => {
-//   try {
-//     const { fullName, password, about, profileImage } = req.body;
-
-//     const saltRounds = 10;
-//     const passwordHash = await bcrypt.hash(password, saltRounds);
-
-//     const website = Website.build({
-//       fullName,
-//       password: passwordHash,
-//       about,
-//       profileImage,
-//     });
-
-//     await website.save();
-
-//     return res.status(200).send(website);
-//   } catch (error: any) {
-//     next(error);
-//   }
-// });
+      return website
+        ? res.status(200).json({
+            code: 200,
+            message: "Website updated",
+            updatedWebsite: website,
+          })
+        : res.status(404).end();
+    } catch (error: any) {
+      next(error);
+    }
+  }
+);
 
 export { router as websiteRouter };

@@ -1,12 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import IPage from "../interfaces/page";
 import logging from "../config/logging";
 import { Link } from "react-router-dom";
+
+import * as websiteServices from "../services/website";
 
 import styled from "styled-components";
 
 import { primaryColor, primaryText, secondaryColor } from "../colors/colors";
 import { useWebsiteContext } from "../hooks/website";
+import { WebsiteContext } from "../contexts/website";
 
 const Wrapper = styled.div`
   height: 100%;
@@ -70,24 +73,26 @@ const GroupContainer = styled.div`
 `;
 
 const HomePage: React.FC<IPage> = (props) => {
+  // TODO
+  // 1. Update name
+  // 2. Update Desc Text
+
+  const [loading, setLoading] = useState<Boolean>(true);
+
+  const { website } = useContext(WebsiteContext);
+
   useEffect(() => {
     logging.info(`Loading ${props.name}`);
   }, [props.name]);
-
-  const { website, getWebsite } = useWebsiteContext();
-
-  useEffect(() => {
-    console.log("website", website);
-
-    getWebsite();
-  }, []); // TODOD website dependency should work ?
 
   return (
     <Wrapper>
       <Container>
         <NameContainer>
-          <NameText>Mickey</NameText>
-          <DescText>Mobile Apps || Fullstack</DescText>
+          <NameText>{website.name}</NameText>
+          <DescText>{website.descText}</DescText>
+          {/* <NameText>{website.name}</NameText> */}
+          {/* <DescText>{website.descText}</DescText> */}
         </NameContainer>
         <GroupContainer>
           <div>

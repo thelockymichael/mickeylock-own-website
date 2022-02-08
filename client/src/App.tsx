@@ -1,5 +1,5 @@
-import React from "react";
-import env from "dotenv";
+import React, { useState, useEffect } from "react";
+
 import {
   BrowserRouter as Router,
   Switch,
@@ -22,7 +22,9 @@ import { faGithub, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 
 // Website service
-import { WebsiteProvider } from "./contexts/website";
+import { WebsiteContext } from "./contexts/website";
+import * as websiteServices from "./services/website";
+import { IWebsite } from "./models";
 
 const FooterContainer = styled.div`
   flex: 0 1 40px;
@@ -75,61 +77,85 @@ const Content = styled.div`
 `;
 
 const App: React.FC<{}> = () => {
+  const [website, setWebsite] = useState<IWebsite>({});
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const getWebsite = async () => {
+      await websiteServices
+        .getAll()
+        .then((response: any) => {
+          setWebsite(response.data);
+          setLoading(false);
+        })
+        .catch((error: Error) => {
+          console.log(error);
+        });
+    };
+    getWebsite();
+  }, []);
+
   return (
     <Router>
-      <WebsiteProvider>
-        <Wrapper>
-          <Content>
-            <Switch>
-              {routes.map((route, index) => {
-                return (
-                  <Route
-                    key={index}
-                    path={route.path}
-                    exact={route.exact}
-                    render={(props: RouteComponentProps<any>) => (
-                      <route.component
-                        name={route.name}
-                        {...props}
-                        {...route.props}
-                      />
-                    )}
-                  />
-                );
-              })}
-            </Switch>
-          </Content>
-          <FooterContainer>
-            <FooterDiv>
-              <NameContainer>
-                <FooterText>You can find me at </FooterText>
-              </NameContainer>
-            </FooterDiv>
-            <FooterDiv>
-              <IconContainer>
-                <a
-                  target="!blank"
-                  href="https://www.instagram.com/mihkelilokki/"
-                >
-                  <FontAwesomeIcon size="4x" color="#FFF" icon={faInstagram} />
-                </a>
-                <a target="!blank" href="https://github.com/thelockymichael">
-                  <FontAwesomeIcon size="4x" color="#FFF" icon={faGithub} />
-                </a>
-                <a target="!blank" href="mailto:michael.rich.lock@gmail.com">
-                  <FontAwesomeIcon size="4x" color="#FFF" icon={faEnvelope} />
-                </a>
-              </IconContainer>
-            </FooterDiv>
-            <Breakline />
-            <FooterDiv>
-              <NameContainer>
-                <FooterText>© 2021 Michael Lock</FooterText>
-              </NameContainer>
-            </FooterDiv>
-          </FooterContainer>
-        </Wrapper>
-      </WebsiteProvider>
+      <WebsiteContext.Provider value={{ website }}>
+        {!loading && (
+          <Wrapper>
+            <Content>
+              <Switch>
+                {routes.map((route, index) => {
+                  return (
+                    <Route
+                      key={index}
+                      path={route.path}
+                      exact={route.exact}
+                      render={(props: RouteComponentProps<any>) => (
+                        <route.component
+                          name={route.name}
+                          {...props}
+                          {...route.props}
+                        />
+                      )}
+                    />
+                  );
+                })}
+              </Switch>
+            </Content>
+            <FooterContainer>
+              <FooterDiv>
+                <NameContainer>
+                  <FooterText>You can find me at </FooterText>
+                </NameContainer>
+              </FooterDiv>
+              <FooterDiv>
+                <IconContainer>
+                  <a
+                    target="!blank"
+                    href="https://www.instagram.com/mihkelilokki/"
+                  >
+                    <FontAwesomeIcon
+                      size="4x"
+                      color="#FFF"
+                      icon={faInstagram}
+                    />
+                  </a>
+                  <a target="!blank" href="https://github.com/thelockymichael">
+                    <FontAwesomeIcon size="4x" color="#FFF" icon={faGithub} />
+                  </a>
+                  <a target="!blank" href="mailto:michael.rich.lock@gmail.com">
+                    <FontAwesomeIcon size="4x" color="#FFF" icon={faEnvelope} />
+                  </a>
+                </IconContainer>
+              </FooterDiv>
+              <Breakline />
+              <FooterDiv>
+                <NameContainer>
+                  <FooterText>© 2021 Michael Lock</FooterText>
+                </NameContainer>
+              </FooterDiv>
+            </FooterContainer>
+          </Wrapper>
+        )}
+      </WebsiteContext.Provider>
     </Router>
   );
 };
