@@ -26,11 +26,14 @@ const app: Application = express();
 const allowedOrigins = [
   "http://localhost:3000",
   "https://mickeylock-own-website-console.herokuapp.com/",
+  "https://mickeylock-own-website-console.herokuapp.com/api/",
+  "https://mickeylock-own-website-console.herokuapp.com/api/login",
 ];
-// Not sure, if I need this line
 
 const options: cors.CorsOptions = {
-  origin: allowedOrigins,
+  credentials: true,
+  origin: true,
+  // origin: allowedOrigins,
 };
 
 app.use(cors(options));
