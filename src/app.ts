@@ -37,8 +37,13 @@ const options: cors.CorsOptions = {
 };
 
 app.use(cors(options));
-app.use(express.json());
+app.use(express.static(path.join(__dirname, "../client/build")));
+
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// Middleware
+app.use(requestLogger);
 
 mongoose
   .connect(config.MONGO_URI)
@@ -66,16 +71,11 @@ app.use((req, res, next) => {
   } else return next();
 });
 
-app.use(express.static(path.join(__dirname, "../client/build/")));
-
 // TODO
 // START HERE
 
 // TODO
 // User registration / login
-
-// Middleware
-app.use(requestLogger);
 
 // Website router
 app.use("/api/website", websiteRouter);
@@ -88,6 +88,11 @@ app.use("/api/login", loginRouter);
 
 // Project router
 app.use("/api/project", projectRouter);
+
+// All other GET requests not handled will return to our React app
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "../client/build", "index.html"));
+});
 
 // Handle requests with unknown endpoint
 app.use(unknownEndpoint);
