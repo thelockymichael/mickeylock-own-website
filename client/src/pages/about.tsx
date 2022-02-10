@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import IPage from "../interfaces/page";
 import logging from "../config/logging";
 
@@ -17,6 +17,7 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 // Route
 import { Link } from "react-router-dom";
+import { WebsiteContext } from "../contexts/website";
 
 const Wrapper = styled.div`
   height: 100%;
@@ -98,11 +99,13 @@ const GroupContainer = styled.div`
 
 const TextContainer = styled.div`
   display: flex;
+  width: 100%;
   padding: 2rem;
 `;
 
 const ImageContainer = styled.div`
   display: flex;
+  justify-content: flex-end;
   padding: 2rem;
   width: 100%;
 `;
@@ -115,6 +118,8 @@ const ProfileImage = styled.img`
 `;
 
 const AboutPage: React.FC<IPage> = (props) => {
+  const { website } = useContext(WebsiteContext);
+
   useEffect(() => {
     logging.info(`Loading ${props.name}`);
   }, [props.name]);
@@ -144,22 +149,7 @@ const AboutPage: React.FC<IPage> = (props) => {
         </NavBar>
         <GroupContainer>
           <TextContainer>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sed
-              enim eros. Aliquam tempus turpis ac sem commodo, vitae pharetra
-              ante mollis. Aliquam suscipit vehicula neque eu accumsan. Aliquam
-              erat volutpat. Nam consectetur fermentum pretium. Mauris et tellus
-              risus. Pellentesque sit amet imperdiet massa. Vestibulum lacinia
-              malesuada elit, ut auctor ligula maximus nec. Donec efficitur,
-              augue ac laoreet porta, eros risus aliquam purus, sit amet semper
-              purus ex condimentum nunc. Donec finibus ac ligula quis porttitor.
-              Aenean turpis metus, molestie a lectus quis, fermentum molestie
-              neque. Nulla orci ex, mattis nec enim ac, varius venenatis velit.
-              Nunc molestie bibendum velit, id elementum quam rutrum vel. Nam
-              pretium neque et ligula luctus consectetur. Donec volutpat nibh
-              mi, egestas accumsan urna interdum a. Duis ac pellentesque leo,
-              quis viverra sapien.
-            </p>
+            <p>{website.aboutText}</p>
           </TextContainer>
           <ImageContainer>
             <ProfileImage

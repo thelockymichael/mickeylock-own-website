@@ -23,7 +23,11 @@ const app: Application = express();
 
 // Add a list of allowed origins.
 // If you have more origins you would like to add, you can add them to the array below.
-const allowedOrigins = ["http://localhost:3000"]; // Not sure, if I need this line
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://mickeylock-own-website-console.herokuapp.com/",
+];
+// Not sure, if I need this line
 
 const options: cors.CorsOptions = {
   origin: allowedOrigins,
