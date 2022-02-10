@@ -5,7 +5,8 @@ interface IWebsite {
   name?: string;
   descText?: string;
   aboutText?: string;
-  profileImage?: string;
+  uploadedImgs?: Array<string>;
+  selectedProfileImg?: string;
   projects?: Array<IProject>;
 }
 

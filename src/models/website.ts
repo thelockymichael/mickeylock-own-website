@@ -7,7 +7,8 @@ interface IWebsite {
   name?: string;
   descText?: string;
   aboutText?: string;
-  profileImage?: string;
+  uploadedImgs?: Array<string>;
+  selectedProfileImg?: string;
   projects?: Array<IProject>;
 }
 
@@ -20,7 +21,8 @@ interface WebsiteDoc extends mongoose.Document {
   name: string;
   descText: string;
   aboutText: string;
-  profileImage: string;
+  uploadedImgs: Array<string>;
+  selectedProfileImg: string;
   projects: Array<IProject>;
 }
 
@@ -34,7 +36,10 @@ const websiteSchema = new mongoose.Schema({
   aboutText: {
     type: String,
   },
-  profileImage: {
+  uploadedImgs: {
+    type: [String],
+  },
+  selectedProfileImg: {
     type: String,
   },
   projects: [

@@ -105,7 +105,7 @@ const TextContainer = styled.div`
 
 const ImageContainer = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   padding: 2rem;
   width: 100%;
 `;
@@ -148,15 +148,16 @@ const AboutPage: React.FC<IPage> = (props) => {
           <Breakline />
         </NavBar>
         <GroupContainer>
-          <TextContainer>
-            <p>{website.aboutText}</p>
-          </TextContainer>
           <ImageContainer>
             <ProfileImage
               alt="profile"
-              src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+              src={"./thumbnails/" + website.selectedProfileImg}
+              // src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
             />
           </ImageContainer>
+          <TextContainer>
+            <p>{website.aboutText}</p>
+          </TextContainer>
         </GroupContainer>
       </Container>
     </Wrapper>

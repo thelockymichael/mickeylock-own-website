@@ -21,23 +21,18 @@ import {
 
 const app: Application = express();
 
-// Add a list of allowed origins.
-// If you have more origins you would like to add, you can add them to the array below.
-const allowedOrigins = [
-  "http://localhost:3000",
-  "https://mickeylock-own-website-console.herokuapp.com/",
-  "https://mickeylock-own-website-console.herokuapp.com/api/",
-  "https://mickeylock-own-website-console.herokuapp.com/api/login",
-];
-
 const options: cors.CorsOptions = {
   credentials: true,
   origin: true,
-  // origin: allowedOrigins,
 };
 
 app.use(cors(options));
 app.use(express.static(path.join(__dirname, "../client/build")));
+
+/* FOR IMAGES */
+app.use("/thumbnails", express.static("thumbnails"));
+app.use(express.static("uploads"));
+/* END */
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

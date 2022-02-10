@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, response, Response } from "express";
 import bcrypt from "bcrypt";
 import { User } from "../models";
-import { getTokenFrom } from "../utils/auth";
+import { getTokenFrom, validateToken } from "../utils/auth";
 import jwt from "jsonwebtoken";
 
 const router = express.Router();
@@ -38,17 +38,18 @@ router.post(
       const findOneUser = await User.findOne({});
 
       if (findOneUser) {
-        console.log("findOneUser", findOneUser);
+        validateToken(req, res);
+        // console.log("findOneUser", findOneUser);
 
-        const token = getTokenFrom(req);
-        console.log("token", token);
+        // const token = getTokenFrom(req);
+        // console.log("token", token);
 
-        const decodedToken = jwt.verify(token, process.env.SECRET);
-        if (!token || !decodedToken.id) {
-          return response
-            .status(401)
-            .json({ error: "token missing or invalid" });
-        }
+        // const decodedToken = jwt.verify(token, process.env.SECRET);
+        // if (!token || !decodedToken.id) {
+        //   return response
+        //     .status(401)
+        //     .json({ error: "token missing or invalid" });
+        // }
       }
 
       const { fullName, password, about, profileImage } = req.body;
