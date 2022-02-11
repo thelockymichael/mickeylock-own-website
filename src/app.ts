@@ -31,7 +31,7 @@ app.use(express.static(path.join(__dirname, "../client/build")));
 
 /* FOR IMAGES */
 app.use("/thumbnails", express.static("thumbnails"));
-app.use("/uploads", express.static("uploads"));
+app.use(express.static("uploads"));
 /* END */
 
 app.use(express.urlencoded({ extended: true }));
