@@ -80,19 +80,10 @@ router.put(
         console.log("thumb", thumb);
       }
 
-      // Add image to uploadedImgs array
-      const { uploadedImgs } = updateWebsite;
-
-      const updateUploadedImgs = uploadedImgs
-        ? uploadedImgs.concat(multerFile?.filename as string)
-        : [multerFile?.filename as string];
       //         $push: { projects: project },
       const website = await Website.findOneAndUpdate(
         {
           $query: "",
-          referenceId: {
-            $ne: [new mongo.ObjectID(req.params.referenceId)],
-          },
         },
         {
           ...updateWebsite,
@@ -141,66 +132,83 @@ router.get(
 
 // TODO
 // 1. [X] READ all images / GET ALL IMAGES
+// TODO
 // 2. Remove image
-// router.delete(
-//   "/",
-//   upload.single("selectedProfileImg"),
-//   async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//       // Validate jwt token
-//       // validateToken(req, res);
 
-//       const updateWebsite: IWebsite = req.body;
-//       let multerFile: Express.Multer.File | undefined = req.file;
+interface CustomDelete<T> extends Request {
+  body: T;
+}
 
-//       let thumb;
-//       console.log("request.file", multerFile);
+router.delete(
+  "/uploaded/images/:id",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Validate jwt token
+      // validateToken(req, res);
 
-//       if (multerFile) {
-//         thumb = await makeThumbnail(
-//           multerFile.path,
-//           "./thumbnails/" + multerFile.filename
-//         );
+      const { id } = req.params;
 
-//         console.log("thumb", thumb);
-//       }
+      console.log("DELETE IMAGE", id);
 
-//       // Add image to uploadedImgs array
-//       const { uploadedImgs } = updateWebsite;
+      const updatedWebsite = await Website.findOneAndUpdate(
+        {
+          $query: "",
+        },
+        {
+          $pull: {
+            uploadedImgs: {
+              $in: [id],
+            },
+          },
+        },
+        { new: true }
+      );
 
-//       const updateUploadedImgs = uploadedImgs
-//         ? uploadedImgs.concat(multerFile?.filename as string)
-//         : [multerFile?.filename as string];
-//       //         $push: { projects: project },
-//       const website = await Website.findOneAndUpdate(
-//         {
-//           $query: "",
-//           referenceId: {
-//             $ne: [new mongo.ObjectID(req.params.referenceId)],
-//           },
-//         },
-//         {
-//           ...updateWebsite,
-//           $addToSet: {
-//             uploadedImgs: multerFile?.filename,
-//           },
-//           selectedProfileImg: multerFile?.filename,
-//         },
-//         { new: true }
-//       );
+      return updatedWebsite
+        ? res.status(200).json({
+            code: 200,
+            message: "Website updated",
+            updatedWebsite: updatedWebsite,
+          })
+        : res.status(404).end();
+      // db.collection("users").updateOne(
+      //   { user: "some userID" },
+      //   { $pull: { incoming: { $in: ["removeMe", "removeMeToo"] } } }
+      // );
 
-//       return website
-//         ? res.status(200).json({
-//             code: 200,
-//             message: "Website updated",
-//             updatedWebsite: website,
-//           })
-//         : res.status(404).end();
-//     } catch (error: any) {
-//       next(error);
-//     }
-//   }
-// );
+      // const updateUploadedImgs = uploadedImgs
+      //   ? uploadedImgs.concat(multerFile?.filename as string)
+      //   : [multerFile?.filename as string];
+      // //         $push: { projects: project },
+      // const website = await Website.findOneAndUpdate(
+      //   {
+      //     $query: "",
+      //     referenceId: {
+      //       $ne: [new mongo.ObjectID(req.params.referenceId)],
+      //     },
+      //   },
+      //   {
+      //     ...updateWebsite,
+      //     $addToSet: {
+      //       uploadedImgs: multerFile?.filename,
+      //     },
+      //     selectedProfileImg: multerFile?.filename,
+      //   },
+      //   { new: true }
+      // );
+
+      // return website
+      //   ? res.status(200).json({
+      //       code: 200,
+      //       message: "Website updated",
+      //       updatedWebsite: website,
+      //     })
+      //   : res.status(404).end();
+    } catch (error: any) {
+      next(error);
+    }
+  }
+);
 // 3. Select profile picture
 
 export { router as websiteRouter };
