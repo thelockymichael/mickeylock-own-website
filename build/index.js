@@ -24,9 +24,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var app_1 = __importDefault(require("./app"));
 var http_1 = __importDefault(require("http"));
-var config = __importStar(require("./utils/config"));
+var config_1 = __importDefault(require("./utils/config"));
 var logger = __importStar(require("./utils/logger"));
 var server = http_1.default.createServer(app_1.default);
-server.listen(config.PORT, function () {
-    logger.info("Server running on port " + config.PORT);
+server.listen(config_1.default.PORT, function () {
+    logger.info("Server running on port " + config_1.default.PORT);
 });

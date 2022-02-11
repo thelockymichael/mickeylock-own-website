@@ -10,6 +10,7 @@ import multer from "multer";
 
 import { makeThumbnail } from "../utils/resize";
 import { validateToken } from "../utils/auth";
+import { mongo } from "mongoose";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -57,12 +58,12 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
 
 // 4. UPDATE single item
 router.put(
-  "/:id",
+  "/",
   upload.single("selectedProfileImg"),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Validate jwt token
-      validateToken(req, res);
+      // validateToken(req, res);
 
       const updateWebsite: IWebsite = req.body;
       let multerFile: Express.Multer.File | undefined = req.file;
@@ -85,12 +86,19 @@ router.put(
       const updateUploadedImgs = uploadedImgs
         ? uploadedImgs.concat(multerFile?.filename as string)
         : [multerFile?.filename as string];
-
-      const website = await Website.findByIdAndUpdate(
-        req.params.id,
+      //         $push: { projects: project },
+      const website = await Website.findOneAndUpdate(
+        {
+          $query: "",
+          referenceId: {
+            $ne: [new mongo.ObjectID(req.params.referenceId)],
+          },
+        },
         {
           ...updateWebsite,
-          uploadedImgs: updateUploadedImgs,
+          $addToSet: {
+            uploadedImgs: multerFile?.filename,
+          },
           selectedProfileImg: multerFile?.filename,
         },
         { new: true }
@@ -109,11 +117,6 @@ router.put(
   }
 );
 
-// TODO
-// 1. READ all images / GET ALL IMAGES
-// . Remove image
-// . Select profile picture
-
 router.get(
   "/uploaded/images",
   async (req: Request, res: Response, next: NextFunction) => {
@@ -131,5 +134,73 @@ router.get(
     }
   }
 );
+
+// import { promisify } from 'util'
+
+// import unlinkAsync = promisify(fs.unlink)
+
+// TODO
+// 1. [X] READ all images / GET ALL IMAGES
+// 2. Remove image
+// router.delete(
+//   "/",
+//   upload.single("selectedProfileImg"),
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//       // Validate jwt token
+//       // validateToken(req, res);
+
+//       const updateWebsite: IWebsite = req.body;
+//       let multerFile: Express.Multer.File | undefined = req.file;
+
+//       let thumb;
+//       console.log("request.file", multerFile);
+
+//       if (multerFile) {
+//         thumb = await makeThumbnail(
+//           multerFile.path,
+//           "./thumbnails/" + multerFile.filename
+//         );
+
+//         console.log("thumb", thumb);
+//       }
+
+//       // Add image to uploadedImgs array
+//       const { uploadedImgs } = updateWebsite;
+
+//       const updateUploadedImgs = uploadedImgs
+//         ? uploadedImgs.concat(multerFile?.filename as string)
+//         : [multerFile?.filename as string];
+//       //         $push: { projects: project },
+//       const website = await Website.findOneAndUpdate(
+//         {
+//           $query: "",
+//           referenceId: {
+//             $ne: [new mongo.ObjectID(req.params.referenceId)],
+//           },
+//         },
+//         {
+//           ...updateWebsite,
+//           $addToSet: {
+//             uploadedImgs: multerFile?.filename,
+//           },
+//           selectedProfileImg: multerFile?.filename,
+//         },
+//         { new: true }
+//       );
+
+//       return website
+//         ? res.status(200).json({
+//             code: 200,
+//             message: "Website updated",
+//             updatedWebsite: website,
+//           })
+//         : res.status(404).end();
+//     } catch (error: any) {
+//       next(error);
+//     }
+//   }
+// );
+// 3. Select profile picture
 
 export { router as websiteRouter };

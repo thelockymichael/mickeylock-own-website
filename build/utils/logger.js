@@ -6,7 +6,9 @@ var info = function () {
     for (var _i = 0; _i < arguments.length; _i++) {
         params[_i] = arguments[_i];
     }
-    console.info.apply(console, params);
+    if (process.env.NODE_ENV !== "test") {
+        console.log.apply(console, params);
+    }
 };
 exports.info = info;
 var error = function () {
@@ -14,6 +16,8 @@ var error = function () {
     for (var _i = 0; _i < arguments.length; _i++) {
         params[_i] = arguments[_i];
     }
-    console.error.apply(console, params);
+    if (process.env.NODE_ENV !== "test") {
+        console.error.apply(console, params);
+    }
 };
 exports.error = error;

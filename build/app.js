@@ -6,18 +6,34 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var cors_1 = __importDefault(require("cors"));
 var path_1 = __importDefault(require("path"));
-var app = express_1.default();
-// TODO
-// User registration / login
-// Add a list of allowed origins.
-// If you have more origins you would like to add, you can add them to the array below.
-var allowedOrigins = ["http://localhost:3000"]; // Not sure, if I need this line
+var mongoose_1 = __importDefault(require("mongoose"));
+var config_1 = __importDefault(require("./utils/config"));
+// Middleware
+var middlware_1 = require("./utils/middlware");
+var routes_1 = require("./routes");
+var app = (0, express_1.default)();
 var options = {
-    origin: allowedOrigins,
+    credentials: true,
+    origin: true,
 };
-app.use(cors_1.default(options));
-app.use(express_1.default.json());
+app.use((0, cors_1.default)(options));
+app.use(express_1.default.static(path_1.default.join(__dirname, "../client/build")));
+/* FOR IMAGES */
+app.use("/thumbnails", express_1.default.static("thumbnails"));
+app.use(express_1.default.static("uploads"));
+/* END */
 app.use(express_1.default.urlencoded({ extended: true }));
+app.use(express_1.default.json());
+// Middleware
+app.use(middlware_1.requestLogger);
+mongoose_1.default
+    .connect(config_1.default.MONGO_URI)
+    .then(function (result) {
+    console.log("connected to MongoDB");
+})
+    .catch(function (error) {
+    console.log("error connecting to MongoDB:", error.message);
+});
 app.use(function (req, res, next) {
     var _a;
     if (process.env.NODE_ENV === "production") {
@@ -35,7 +51,24 @@ app.use(function (req, res, next) {
     else
         return next();
 });
-app.use(express_1.default.static(path_1.default.join(__dirname, "../client/build/")));
 // TODO
 // START HERE
+// TODO
+// User registration / login
+// Website router
+app.use("/api/website", routes_1.websiteRouter);
+// User router
+app.use("/api/user", routes_1.userRouter);
+// Login router
+app.use("/api/login", routes_1.loginRouter);
+// Project router
+app.use("/api/project", routes_1.projectRouter);
+// All other GET requests not handled will return to our React app
+app.get("*", function (req, res) {
+    res.sendFile(path_1.default.resolve(__dirname, "../client/build", "index.html"));
+});
+// Handle requests with unknown endpoint
+app.use(middlware_1.unknownEndpoint);
+// Last loaded middleware
+app.use(middlware_1.errorHandler);
 exports.default = app;

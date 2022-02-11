@@ -19,6 +19,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.errorHandler = exports.unknownEndpoint = exports.requestLogger = void 0;
 var logger = __importStar(require("./logger"));
 var requestLogger = function (request, response, next) {
     logger.info("Method:", request.method);
@@ -27,11 +28,13 @@ var requestLogger = function (request, response, next) {
     logger.info("---");
     next();
 };
-// const unknownEndpoint = (request, response) => {
-//   response.status(404).send({error: 'unknown endpoint'})
-// }
+exports.requestLogger = requestLogger;
+var unknownEndpoint = function (request, response) {
+    response.status(404).send({ error: "unknown endpoint" });
+};
+exports.unknownEndpoint = unknownEndpoint;
 var errorHandler = function (error, request, response, next) {
-    logger.error(error.message);
+    logger.error("ERROR MSG", error.message);
     if (error.name === "CastError" && error.kind === "ObjectId") {
         return response.status(400).send({ error: "malformatted id" });
     }
@@ -43,11 +46,6 @@ var errorHandler = function (error, request, response, next) {
             error: "invalid token",
         });
     }
-    logger.error(error.message);
     next(error);
 };
-module.exports = {
-    requestLogger: requestLogger,
-    // unknownEndpoint,
-    errorHandler: errorHandler,
-};
+exports.errorHandler = errorHandler;
