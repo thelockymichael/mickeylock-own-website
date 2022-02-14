@@ -88,8 +88,14 @@ const App: React.FC<{}> = () => {
           setWebsite(response.data);
           setLoading(false);
         })
-        .catch((error: Error) => {
+        .catch(async (error: Error) => {
+          const initWebsite = await websiteServices.initWebsite();
+
+          setWebsite(initWebsite);
+
           console.log(error);
+          setLoading(false);
+          // window.location.reload();
         });
     };
     getWebsite();

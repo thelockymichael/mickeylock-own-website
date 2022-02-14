@@ -39,17 +39,6 @@ router.post(
 
       if (findOneUser) {
         validateToken(req, res);
-        // console.log("findOneUser", findOneUser);
-
-        // const token = getTokenFrom(req);
-        // console.log("token", token);
-
-        // const decodedToken = jwt.verify(token, process.env.SECRET);
-        // if (!token || !decodedToken.id) {
-        //   return response
-        //     .status(401)
-        //     .json({ error: "token missing or invalid" });
-        // }
       }
 
       const { fullName, password, about, profileImage } = req.body;

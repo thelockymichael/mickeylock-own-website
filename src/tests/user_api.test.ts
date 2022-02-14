@@ -17,7 +17,7 @@ describe("creation of first user and registering other users with first created 
   test("creation succeeds with a fresh username", async () => {
     const usersAtStart = await helper.usersInDb();
 
-    console.log("users at start ", usersAtStart.length);
+    // console.log("users at start ", usersAtStart.length);
 
     const newUser = {
       fullName: "root",

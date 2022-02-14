@@ -57,13 +57,46 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
 /* END */
 
 // 4. UPDATE single item
+
+// Initialize website for the first time
+router.post("/", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    // Find single website document
+    // Init website for the first time
+    const findWebsite = await Website.findOne({});
+
+    if (findWebsite) {
+      // Validate jwt token
+      validateToken(req, res);
+    }
+
+    const website = Website.build({
+      name: "Michael Lock",
+      descText: "Mobile Apps || Fullstack",
+      aboutText: "Hello everybody",
+      uploadedImgs: [],
+      selectedProfileImg: "",
+      projects: [],
+    });
+
+    await website.save();
+
+    return res.status(200).send(website);
+  } catch ({ message }) {
+    res.status(401).json({
+      user: null,
+      error: message,
+    });
+  }
+});
+
 router.put(
   "/",
   upload.single("selectedProfileImg"),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Validate jwt token
-      // validateToken(req, res);
+      validateToken(req, res);
 
       const updateWebsite: IWebsite = req.body;
       let multerFile: Express.Multer.File | undefined = req.file;
@@ -113,7 +146,7 @@ router.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Validate jwt token
-      // validateToken(req, res);
+      validateToken(req, res);
 
       const website: IWebsite | null = await Website.findOne({});
 
@@ -144,11 +177,9 @@ router.delete(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Validate jwt token
-      // validateToken(req, res);
+      validateToken(req, res);
 
       const { id } = req.params;
-
-      console.log("DELETE IMAGE", id);
 
       const updatedWebsite = await Website.findOneAndUpdate(
         {
@@ -171,44 +202,44 @@ router.delete(
             updatedWebsite: updatedWebsite,
           })
         : res.status(404).end();
-      // db.collection("users").updateOne(
-      //   { user: "some userID" },
-      //   { $pull: { incoming: { $in: ["removeMe", "removeMeToo"] } } }
-      // );
-
-      // const updateUploadedImgs = uploadedImgs
-      //   ? uploadedImgs.concat(multerFile?.filename as string)
-      //   : [multerFile?.filename as string];
-      // //         $push: { projects: project },
-      // const website = await Website.findOneAndUpdate(
-      //   {
-      //     $query: "",
-      //     referenceId: {
-      //       $ne: [new mongo.ObjectID(req.params.referenceId)],
-      //     },
-      //   },
-      //   {
-      //     ...updateWebsite,
-      //     $addToSet: {
-      //       uploadedImgs: multerFile?.filename,
-      //     },
-      //     selectedProfileImg: multerFile?.filename,
-      //   },
-      //   { new: true }
-      // );
-
-      // return website
-      //   ? res.status(200).json({
-      //       code: 200,
-      //       message: "Website updated",
-      //       updatedWebsite: website,
-      //     })
-      //   : res.status(404).end();
     } catch (error: any) {
       next(error);
     }
   }
 );
-// 3. Select profile picture
+
+// TODO
+// 3. Choose profile Image
+router.put(
+  "/uploaded/images/:id",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Validate jwt token
+      validateToken(req, res);
+
+      const selectedProfileImg = req.params.id;
+
+      const updatedWebsite = await Website.findOneAndUpdate(
+        {
+          $query: "",
+        },
+        {
+          selectedProfileImg,
+        },
+        { new: true }
+      );
+
+      return updatedWebsite
+        ? res.status(200).json({
+            code: 200,
+            message: "Website updated",
+            updatedWebsite: updatedWebsite,
+          })
+        : res.status(404).end();
+    } catch (error: any) {
+      next(error);
+    }
+  }
+);
 
 export { router as websiteRouter };
