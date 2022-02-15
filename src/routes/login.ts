@@ -13,8 +13,6 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
       fullName: fullName,
     });
 
-    console.log("jotain", user);
-
     const passwordCorrect =
       user === null ? false : await bcrypt.compare(password, user.passwordHash);
 

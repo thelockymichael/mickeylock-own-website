@@ -12,7 +12,6 @@ const getTokenFrom = (request: Request) => {
 
 const validateToken = (req: Request, res: Response) => {
   const token = getTokenFrom(req);
-  console.log("token", token);
 
   const decodedToken = jwt.verify(token, process.env.SECRET);
   if (!token || !decodedToken.id) {

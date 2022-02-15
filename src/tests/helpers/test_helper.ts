@@ -1,4 +1,4 @@
-import { User } from "../../models";
+import { User, Website } from "../../models";
 
 // Users
 const usersInDb = async () => {
@@ -6,4 +6,10 @@ const usersInDb = async () => {
   return users.map((u) => u.toJSON());
 };
 
-export { usersInDb };
+// Single website document
+const websiteInDb = async () => {
+  const website = await Website.find({});
+  return website.map((u) => u.toJSON());
+};
+
+export { usersInDb, websiteInDb };

@@ -181,6 +181,7 @@ describe("creation of first user and registering other users with first created 
   });
 });
 
-afterAll(() => {
-  mongoose.connection.close();
+afterAll(async () => {
+  await User.deleteMany({});
+  await mongoose.connection.close();
 }, 10000);
