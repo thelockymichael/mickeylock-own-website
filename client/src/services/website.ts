@@ -1,7 +1,9 @@
 import axios from "axios";
 import config from "../config/config";
 import { IWebsite } from "../models";
-const baseUrl = config.WEBSITE_API || "/api/website";
+const baseUrl = config.WEBSITE_API || "/api/website/selectedProfileImg";
+
+console.log("baseUrl", baseUrl);
 
 const getAll = async () => {
   const response = await axios.get(baseUrl);

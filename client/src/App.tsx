@@ -95,7 +95,6 @@ const App: React.FC<{}> = () => {
 
           console.log(error);
           setLoading(false);
-          // window.location.reload();
         });
     };
     getWebsite();

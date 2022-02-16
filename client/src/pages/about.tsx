@@ -120,6 +120,13 @@ const ProfileImage = styled.img`
 const AboutPage: React.FC<IPage> = (props) => {
   const { website } = useContext(WebsiteContext);
 
+  let imgType = website.selectedProfileImg?.imgType;
+  let img = website.selectedProfileImg?.img;
+  let dataBase64;
+  if (img) dataBase64 = img.data;
+  const data = Buffer.from(dataBase64).toString("base64");
+  const src = `data:${imgType};charset=utf-8;base64,${data}`;
+
   useEffect(() => {
     logging.info(`Loading ${props.name}`);
   }, [props.name]);
@@ -149,11 +156,7 @@ const AboutPage: React.FC<IPage> = (props) => {
         </NavBar>
         <GroupContainer>
           <ImageContainer>
-            <ProfileImage
-              alt="profile"
-              src={"./thumbnails/" + website.selectedProfileImg}
-              // src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-            />
+            <ProfileImage alt="profile" src={src} />
           </ImageContainer>
           <TextContainer>
             <p>{website.aboutText}</p>

@@ -1,3 +1,4 @@
+import { IImage } from "./image";
 import { IProject } from "./index";
 
 interface IWebsite {
@@ -5,8 +6,8 @@ interface IWebsite {
   name?: string;
   descText?: string;
   aboutText?: string;
-  uploadedImgs?: Array<string>;
-  selectedProfileImg?: string;
+  uploadedImgs?: Array<IImage>;
+  selectedProfileImg?: IImage;
   projects?: Array<IProject>;
 }
 
