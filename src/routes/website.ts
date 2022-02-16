@@ -7,10 +7,13 @@ import { fileFilter } from "../utils/fileFilter";
 
 // Image file UPLOAD import
 import multer from "multer";
+// Read file
+import fs from "fs";
 
 import { makeThumbnail } from "../utils/resize";
 import { validateToken } from "../utils/auth";
 import { mongo } from "mongoose";
+import { IImage, Image } from "../models/image";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -30,15 +33,47 @@ const upload = multer({ storage, fileFilter });
 
 const router = express.Router();
 
+// 1. Get website data
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const website = await Website.findOne({}).populate("projects");
+    const website = await Website.findOne({})
+      .populate("selectedProfileImg")
+      .populate("uploadedImgs")
+      .populate("projects");
 
     return website ? res.status(200).send(website) : res.status(404).end();
   } catch (error: any) {
     next(error);
   }
 });
+
+// 2. Get Binary Data from selectedProfileImg
+router.get(
+  "/selectedProfileImg",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const website = await Website.findOne({}).populate("selectedProfileImg");
+
+      return website ? res.status(200).send(website) : res.status(404).end();
+    } catch (error: any) {
+      next(error);
+    }
+  }
+);
+
+// 3. Get Binary Data from uploadedImgs
+router.get(
+  "/uploadedImgs",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const website = await Website.findOne({}).populate("uploadedImgs");
+
+      return website ? res.status(200).send(website) : res.status(404).end();
+    } catch (error: any) {
+      next(error);
+    }
+  }
+);
 
 // TODO
 // Don't remove. Might need this later
@@ -75,7 +110,6 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
       descText: "Mobile Apps || Fullstack",
       aboutText: "Hello everybody",
       uploadedImgs: [],
-      selectedProfileImg: "",
       projects: [],
     });
 
@@ -90,40 +124,99 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
+// TODO 1
+// 1. IMPLEMENT in website interface, PUT
+// 2. Display files in postman get website data
+// 3. GET and display binary data images from MongoDB in FRONTEND
+
+const resizeImage = () => {};
+
+const saveImage = (multerFile?: Express.Multer.File) => {
+  if (multerFile) {
+    const img = fs.readFileSync(multerFile?.path);
+    const encodedImage = img.toString("base64");
+
+    // console.log("encodedImage", encodedImage);
+
+    const finalImg = {
+      name: multerFile?.filename,
+      imgType: multerFile.mimetype,
+      img: Buffer.from(encodedImage, "base64"),
+    };
+    console.log("finalImage", finalImg);
+
+    return finalImg;
+  }
+};
+
+router.post(
+  "/binarydata",
+  upload.single("img"),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { name } = req.body;
+
+      if (req.file) {
+        const img = fs.readFileSync(req.file.path);
+        const encodedImage = img.toString("base64");
+        console.log("req.file", req.file);
+
+        const finalImg: IImage = {
+          name: name,
+          imgType: req.file.mimetype,
+          img: Buffer.from(encodedImage, "base64"),
+        };
+
+        const newImage = await Image.build(finalImg);
+
+        await newImage.save();
+
+        return res.status(200).send({
+          message: "New image uploaded!",
+        });
+      }
+    } catch ({ message }) {
+      res.status(401).json({
+        user: null,
+        error: message,
+      });
+    }
+  }
+);
+
+/** END */
 router.put(
   "/",
   upload.single("selectedProfileImg"),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Validate jwt token
-      validateToken(req, res);
+      // validateToken(req, res);
 
       const updateWebsite: IWebsite = req.body;
       let multerFile: Express.Multer.File | undefined = req.file;
 
-      let thumb;
       console.log("request.file", multerFile);
 
-      if (multerFile) {
-        thumb = await makeThumbnail(
-          multerFile.path,
-          "./thumbnails/" + multerFile.filename
-        );
+      const finalImg = saveImage(multerFile);
+      let newImage;
 
-        console.log("thumb", thumb);
+      console.log("1. finalImg", finalImg?.name);
+      if (finalImg) {
+        newImage = await Image.build(finalImg);
+        await newImage.save();
       }
 
-      //         $push: { projects: project },
       const website = await Website.findOneAndUpdate(
         {
           $query: "",
         },
         {
           ...updateWebsite,
-          $addToSet: {
-            uploadedImgs: multerFile?.filename,
+          $push: {
+            uploadedImgs: newImage,
           },
-          selectedProfileImg: multerFile?.filename,
+          selectedProfileImg: newImage,
         },
         { new: true }
       );

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
+import { IImage } from "./image";
 import { IProject } from "./index";
 
 interface IWebsite {
@@ -7,8 +8,8 @@ interface IWebsite {
   name?: string;
   descText?: string;
   aboutText?: string;
-  uploadedImgs?: Array<string>;
-  selectedProfileImg?: string;
+  uploadedImgs?: Array<IImage>;
+  selectedProfileImg?: IImage;
   projects?: Array<IProject>;
 }
 
@@ -21,8 +22,8 @@ interface WebsiteDoc extends mongoose.Document {
   name: string;
   descText: string;
   aboutText: string;
-  uploadedImgs: Array<string>;
-  selectedProfileImg: string;
+  uploadedImgs: Array<IImage>;
+  selectedProfileImg?: IImage;
   projects: Array<IProject>;
 }
 
@@ -36,11 +37,15 @@ const websiteSchema = new mongoose.Schema({
   aboutText: {
     type: String,
   },
-  uploadedImgs: {
-    type: [String],
-  },
+  uploadedImgs: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Image",
+    },
+  ],
   selectedProfileImg: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Image",
   },
   projects: [
     {
