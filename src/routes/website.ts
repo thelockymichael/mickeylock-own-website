@@ -10,10 +10,12 @@ import multer from "multer";
 // Read file
 import fs from "fs";
 
-import { makeThumbnail } from "../utils/resize";
+// import { makeThumbnail } from "../utils/resize";
 import { validateToken } from "../utils/auth";
 import { mongo } from "mongoose";
 import { IImage, Image } from "../models/image";
+
+import sharp from "sharp";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -129,10 +131,20 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
 // 2. Display files in postman get website data
 // 3. GET and display binary data images from MongoDB in FRONTEND
 
-const saveImage = (multerFile?: Express.Multer.File) => {
+const saveImage = async (multerFile?: Express.Multer.File) => {
   if (multerFile) {
-    const img = fs.readFileSync(multerFile?.path);
-    const encodedImage = img.toString("base64");
+    // TODO
+    // 1. Resize image
+    const thumbnail = await sharp(multerFile?.path)
+      .resize(500, 750, {
+        fit: sharp.fit.inside,
+        withoutEnlargement: true,
+      })
+      .toFormat("jpeg")
+      .jpeg({ quality: 80 })
+      .toBuffer();
+    // const img = fs.readFileSync(multerFile?.path);
+    const encodedImage = thumbnail.toString("base64");
 
     // console.log("encodedImage", encodedImage);
 
@@ -142,6 +154,26 @@ const saveImage = (multerFile?: Express.Multer.File) => {
       img: Buffer.from(encodedImage, "base64"),
     };
     console.log("finalImage", finalImg);
+
+    /**
+     * 
+      import sharp from "sharp";
+
+      const makeThumbnail = async (file, thumbname) => {
+        const thumbnail = await sharp(file)
+          .resize(500, 750, {
+            fit: sharp.fit.inside,
+            withoutEnlargement: true,
+          })
+          .toFormat("jpeg")
+          .jpeg({ quality: 80 })
+          .toFile(thumbname);
+
+        return thumbnail;
+      };
+
+      export { makeThumbnail };
+     */
 
     return finalImg;
   }
@@ -161,7 +193,7 @@ router.put(
 
       console.log("request.file", multerFile);
 
-      const finalImg = saveImage(multerFile);
+      const finalImg = await saveImage(multerFile);
       let newImage;
 
       console.log("1. finalImg", finalImg?.name);
@@ -214,10 +246,6 @@ router.get(
     }
   }
 );
-
-interface CustomDelete<T> extends Request {
-  body: T;
-}
 
 router.delete(
   "/uploaded/images/:id",
