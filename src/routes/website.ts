@@ -129,8 +129,6 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
 // 2. Display files in postman get website data
 // 3. GET and display binary data images from MongoDB in FRONTEND
 
-const resizeImage = () => {};
-
 const saveImage = (multerFile?: Express.Multer.File) => {
   if (multerFile) {
     const img = fs.readFileSync(multerFile?.path);
@@ -148,41 +146,6 @@ const saveImage = (multerFile?: Express.Multer.File) => {
     return finalImg;
   }
 };
-
-router.post(
-  "/binarydata",
-  upload.single("img"),
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { name } = req.body;
-
-      if (req.file) {
-        const img = fs.readFileSync(req.file.path);
-        const encodedImage = img.toString("base64");
-        console.log("req.file", req.file);
-
-        const finalImg: IImage = {
-          name: name,
-          imgType: req.file.mimetype,
-          img: Buffer.from(encodedImage, "base64"),
-        };
-
-        const newImage = await Image.build(finalImg);
-
-        await newImage.save();
-
-        return res.status(200).send({
-          message: "New image uploaded!",
-        });
-      }
-    } catch ({ message }) {
-      res.status(401).json({
-        user: null,
-        error: message,
-      });
-    }
-  }
-);
 
 /** END */
 router.put(
@@ -219,7 +182,7 @@ router.put(
           selectedProfileImg: newImage,
         },
         { new: true }
-      );
+      ).populate("selectedProfileImg");
 
       return website
         ? res.status(200).json({
@@ -252,15 +215,6 @@ router.get(
   }
 );
 
-// import { promisify } from 'util'
-
-// import unlinkAsync = promisify(fs.unlink)
-
-// TODO
-// 1. [X] READ all images / GET ALL IMAGES
-// TODO
-// 2. Remove image
-
 interface CustomDelete<T> extends Request {
   body: T;
 }
@@ -270,9 +224,13 @@ router.delete(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Validate jwt token
-      validateToken(req, res);
+      // validateToken(req, res);
 
       const { id } = req.params;
+
+      await Image.findByIdAndRemove(id);
+
+      // Remove field if id matches
 
       const updatedWebsite = await Website.findOneAndUpdate(
         {
@@ -291,7 +249,7 @@ router.delete(
       return updatedWebsite
         ? res.status(200).json({
             code: 200,
-            message: "Website updated",
+            message: "Image is deleted.",
             updatedWebsite: updatedWebsite,
           })
         : res.status(404).end();
@@ -301,23 +259,31 @@ router.delete(
   }
 );
 
-// TODO
-// 3. Choose profile Image
 router.put(
   "/uploaded/images/:id",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Validate jwt token
-      validateToken(req, res);
+      // validateToken(req, res);
 
-      const selectedProfileImg = req.params.id;
+      const { id } = req.params;
+
+      // TODO
+      // 1. Find IMAGE from Images
+      // 2. Replace selectedProfileImg with found IMAGE
+
+      const replaceImage = await Image.findById(id);
+
+      // console.log("replaceImage", replaceImage);
+
+      // const selectedProfileImg = req.params.id;
 
       const updatedWebsite = await Website.findOneAndUpdate(
         {
           $query: "",
         },
         {
-          selectedProfileImg,
+          selectedProfileImg: replaceImage,
         },
         { new: true }
       );
@@ -325,7 +291,7 @@ router.put(
       return updatedWebsite
         ? res.status(200).json({
             code: 200,
-            message: "Website updated",
+            message: "Profile image is now updated.",
             updatedWebsite: updatedWebsite,
           })
         : res.status(404).end();
