@@ -1,6 +1,6 @@
 import mongoose, { PopulatedDoc } from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
-import { IUser } from ".";
+import { IImage } from ".";
 
 interface IProject {
   _id?: string;
@@ -8,10 +8,8 @@ interface IProject {
   description: string;
   tags?: string[];
   gitHubLink?: string;
-  imageUrl?: string;
+  image?: IImage;
   date?: Date;
-  user: PopulatedDoc<IUser>;
-  // user: string;
 }
 
 interface ProjectModelInterface extends mongoose.Model<ProjectDoc> {
@@ -24,10 +22,8 @@ interface ProjectDoc extends mongoose.Document {
   description: string;
   tags?: string[];
   gitHubLink?: string;
-  imageUrl?: string;
+  image?: IImage;
   date?: Date;
-  user: PopulatedDoc<IUser>;
-  // user: string;
 }
 
 const ProjectSchema = new mongoose.Schema({
@@ -47,14 +43,13 @@ const ProjectSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
-  imageUrl: {
-    type: String,
-    required: false,
-  },
-  date: Date,
-  user: {
+  image: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "Image",
+  },
+  date: {
+    type: Date,
+    required: false,
   },
 });
 

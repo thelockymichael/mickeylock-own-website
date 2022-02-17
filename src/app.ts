@@ -82,7 +82,7 @@ app.use("/api/user", userRouter);
 app.use("/api/login", loginRouter);
 
 // Project router
-app.use("/api/project", projectRouter);
+app.use("/api/website/projects", projectRouter);
 
 // All other GET requests not handled will return to our React app
 app.get("*", (req, res) => {

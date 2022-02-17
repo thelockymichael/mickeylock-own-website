@@ -11,7 +11,7 @@ import multer from "multer";
 import { validateToken } from "../utils/auth";
 import { Image } from "../models/image";
 
-import sharp from "sharp";
+import { saveImage } from "../utils/resize";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -22,10 +22,6 @@ const storage = multer.diskStorage({
     cb(null, file.originalname);
   },
 });
-
-interface CustomRequest<T> extends Request {
-  body: T;
-}
 
 const upload = multer({ storage, fileFilter });
 
@@ -73,24 +69,6 @@ router.get(
   }
 );
 
-// TODO
-// Don't remove. Might need this later
-// router.post("/", async (req: Request, res: Response, next: NextFunction) => {
-//   try {
-//     const { name, descText, aboutText, profileImage, projects } = req.body;
-
-//     const website = Website.build({
-//       name,
-//       descText,
-//       aboutText,
-//       profileImage,
-//       projects,
-//     });
-
-/* END */
-
-// 4. UPDATE single item
-
 // Initialize website for the first time
 router.post("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -122,58 +100,6 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
-// TODO 1
-// 1. IMPLEMENT in website interface, PUT
-// 2. Display files in postman get website data
-// 3. GET and display binary data images from MongoDB in FRONTEND
-
-const saveImage = async (multerFile?: Express.Multer.File) => {
-  if (multerFile) {
-    // TODO
-    // 1. Resize image
-    const thumbnail = await sharp(multerFile?.path)
-      .resize(500, 750, {
-        fit: sharp.fit.inside,
-        withoutEnlargement: true,
-      })
-      .toFormat("jpeg")
-      .jpeg({ quality: 80 })
-      .toBuffer();
-
-    const encodedImage = thumbnail.toString("base64");
-
-    const finalImg = {
-      name: multerFile?.filename,
-      imgType: multerFile.mimetype,
-      img: Buffer.from(encodedImage, "base64"),
-    };
-    console.log("finalImage", finalImg);
-
-    /**
-     * 
-      import sharp from "sharp";
-
-      const makeThumbnail = async (file, thumbname) => {
-        const thumbnail = await sharp(file)
-          .resize(500, 750, {
-            fit: sharp.fit.inside,
-            withoutEnlargement: true,
-          })
-          .toFormat("jpeg")
-          .jpeg({ quality: 80 })
-          .toFile(thumbname);
-
-        return thumbnail;
-      };
-
-      export { makeThumbnail };
-     */
-
-    return finalImg;
-  }
-};
-
-/** END */
 router.put(
   "/",
   upload.single("selectedProfileImg"),

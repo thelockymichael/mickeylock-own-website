@@ -1,4 +1,4 @@
-import { IUser } from ".";
+import { IImage, IUser } from ".";
 
 interface IProject {
   _id?: string;
@@ -6,7 +6,7 @@ interface IProject {
   description: string;
   tags?: string[];
   gitHubLink?: string;
-  imageUrl?: string;
+  image?: IImage;
   date?: Date;
   user: IUser;
 }

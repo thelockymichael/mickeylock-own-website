@@ -13,4 +13,30 @@ const makeThumbnail = async (file, thumbname) => {
   return thumbnail;
 };
 
-export { makeThumbnail };
+const saveImage = async (multerFile?: Express.Multer.File) => {
+  if (multerFile) {
+    // TODO
+    // 1. Resize image
+    const thumbnail = await sharp(multerFile?.path)
+      .resize(500, 750, {
+        fit: sharp.fit.inside,
+        withoutEnlargement: true,
+      })
+      .toFormat("jpeg")
+      .jpeg({ quality: 80 })
+      .toBuffer();
+
+    const encodedImage = thumbnail.toString("base64");
+
+    const finalImg = {
+      name: multerFile?.filename,
+      imgType: multerFile.mimetype,
+      img: Buffer.from(encodedImage, "base64"),
+    };
+    console.log("finalImage", finalImg);
+
+    return finalImg;
+  }
+};
+
+export { makeThumbnail, saveImage };
