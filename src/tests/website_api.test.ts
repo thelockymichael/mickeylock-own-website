@@ -2,8 +2,13 @@ import mongoose from "mongoose";
 import supertest from "supertest";
 import app from "../app";
 import * as helper from "./helpers/test_helper";
-import { IUser, User, Website } from "../models";
-import bcrypt from "bcrypt";
+import { IUser, IWebsite, User, Website, Image } from "../models";
+import fs from "fs";
+import path from "path";
+
+// Import image file
+
+// import dummyImage from "./dummy-img/PortfolioPic.jpg";
 
 jest.setTimeout(30000);
 
@@ -12,11 +17,13 @@ const api = supertest(app);
 // 1. Create a website
 // 2. Edit name & descText
 // 3. Edit aboutText and upload PROFILE IMG
+// => Create DUMMY profile image PortfolioPic2_23.0.1...
 
 describe("creation of website document and editing the website ", () => {
   beforeAll(async () => {
     await Website.deleteMany({});
     await User.deleteMany({});
+    await Image.deleteMany({});
 
     const newUser = {
       fullName: "root",
@@ -105,14 +112,18 @@ describe("creation of website document and editing the website ", () => {
         authToken = response.body.authToken;
       });
 
-    const updatedWebsite = {
-      aboutText: "Hello everybody!",
-    };
+    // TODO
+    // 1. Upload profile picture
+    // const img = fs.readFileSync(`${__dirname}/dummy-img/angry-resized.png`);
+    const img = path.resolve(__dirname, "./dummy-img/angry-resized.png");
+
+    const abouText = "Hello everybody!";
 
     await api
       .put("/api/website/")
       .set("Authorization", `bearer ${authToken}`)
-      .send(updatedWebsite)
+      .field("aboutText", abouText)
+      .attach("selectedProfileImg", img)
       .expect(200)
       .expect("Content-Type", /application\/json/);
 
@@ -121,7 +132,7 @@ describe("creation of website document and editing the website ", () => {
 
     const websiteName = websiteAtEnd.map((u) => u.aboutText);
 
-    expect(websiteName).toContain(updatedWebsite.aboutText);
+    expect(websiteName).toContain(abouText);
   });
 });
 

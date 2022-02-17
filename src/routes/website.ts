@@ -1,5 +1,4 @@
 import express, { NextFunction, Request, Response } from "express";
-import bcrypt from "bcrypt";
 import { IWebsite, Website } from "../models";
 
 // File filter
@@ -7,13 +6,10 @@ import { fileFilter } from "../utils/fileFilter";
 
 // Image file UPLOAD import
 import multer from "multer";
-// Read file
-import fs from "fs";
 
 // import { makeThumbnail } from "../utils/resize";
 import { validateToken } from "../utils/auth";
-import { mongo } from "mongoose";
-import { IImage, Image } from "../models/image";
+import { Image } from "../models/image";
 
 import sharp from "sharp";
 
@@ -143,10 +139,8 @@ const saveImage = async (multerFile?: Express.Multer.File) => {
       .toFormat("jpeg")
       .jpeg({ quality: 80 })
       .toBuffer();
-    // const img = fs.readFileSync(multerFile?.path);
-    const encodedImage = thumbnail.toString("base64");
 
-    // console.log("encodedImage", encodedImage);
+    const encodedImage = thumbnail.toString("base64");
 
     const finalImg = {
       name: multerFile?.filename,
@@ -186,7 +180,9 @@ router.put(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Validate jwt token
-      // validateToken(req, res);
+      validateToken(req, res);
+
+      console.log("req.body ADS-123", req.body);
 
       const updateWebsite: IWebsite = req.body;
       let multerFile: Express.Multer.File | undefined = req.file;
@@ -252,7 +248,7 @@ router.delete(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Validate jwt token
-      // validateToken(req, res);
+      validateToken(req, res);
 
       const { id } = req.params;
 
@@ -292,7 +288,7 @@ router.put(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Validate jwt token
-      // validateToken(req, res);
+      validateToken(req, res);
 
       const { id } = req.params;
 
