@@ -3,7 +3,7 @@ import uniqueValidator from "mongoose-unique-validator";
 import { IProject } from "./index";
 
 interface IImage {
-  _id?: string;
+  id?: string;
   name: string;
   img?: Buffer;
   imgType?: string;
@@ -14,7 +14,7 @@ interface ImageModelInterface extends mongoose.Model<ImageDoc> {
 }
 
 interface ImageDoc extends mongoose.Document {
-  _id?: string;
+  id?: string;
   name: string;
   img: Buffer;
   imgType: string;

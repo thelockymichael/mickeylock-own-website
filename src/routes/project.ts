@@ -71,7 +71,9 @@ router.post(
          */
 
     try {
-      // const project: IProject = req.body;
+      // Validate jwt token
+      // validateToken(req, res);
+
       let multerFile: Express.Multer.File | undefined = req.file;
 
       console.log("updateProject", req.body);
@@ -86,7 +88,11 @@ router.post(
         await newImage.save();
       }
 
-      const project: IProject = { ...req.body, image: newImage };
+      const tags = JSON.parse(req.body.tags);
+
+      console.log("newTags", tags);
+
+      const project: IProject = { ...req.body, tags, image: newImage };
 
       const newProject = await Project.build(project);
 
@@ -97,6 +103,55 @@ router.post(
             code: 200,
             message: "New project created.",
             newProject,
+          })
+        : res.status(404).end();
+    } catch (error: any) {
+      next(error);
+    }
+  }
+);
+
+router.delete(
+  "/:id",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Validate jwt token
+      // validateToken(req, res);
+
+      const projectId = req.params.id;
+
+      const deletedProject = await Project.findByIdAndRemove(projectId);
+
+      return deletedProject
+        ? res.status(200).json({
+            code: 200,
+            message: "Project is deleted.",
+            deletedProject,
+          })
+        : res.status(404).end();
+    } catch (error: any) {
+      next(error);
+    }
+  }
+);
+
+router.delete(
+  "/images/:id",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Validate jwt token
+      // validateToken(req, res);
+
+      const imageId = req.params.id;
+
+      // Remove field if id matches
+      const deletedImage = await Image.findByIdAndRemove(imageId);
+
+      return deletedImage
+        ? res.status(200).json({
+            code: 200,
+            message: "Image is deleted.",
+            deletedImage,
           })
         : res.status(404).end();
     } catch (error: any) {

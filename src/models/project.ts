@@ -6,7 +6,7 @@ interface IProject {
   _id?: string;
   name: string;
   description: string;
-  tags?: string[];
+  tags?: Array<string>;
   gitHubLink?: string;
   image?: IImage;
   date?: Date;
@@ -20,7 +20,7 @@ interface ProjectDoc extends mongoose.Document {
   _id?: string;
   name: string;
   description: string;
-  tags?: string[];
+  tags?: Array<string>;
   gitHubLink?: string;
   image?: IImage;
   date?: Date;
