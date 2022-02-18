@@ -112,9 +112,6 @@ describe("creation of website document and editing the website ", () => {
         authToken = response.body.authToken;
       });
 
-    // TODO
-    // 1. Upload profile picture
-    // const img = fs.readFileSync(`${__dirname}/dummy-img/angry-resized.png`);
     const img = path.resolve(__dirname, "./dummy-img/angry-resized.png");
 
     const abouText = "Hello everybody!";

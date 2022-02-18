@@ -156,7 +156,10 @@ const AboutPage: React.FC<IPage> = (props) => {
         </NavBar>
         <GroupContainer>
           <ImageContainer>
-            <ProfileImage alt="profile" src={src} />
+            <ProfileImage
+              alt="profile"
+              src={src || "https://via.placeholder.com/700x400"}
+            />
           </ImageContainer>
           <TextContainer>
             <p>{website.aboutText}</p>

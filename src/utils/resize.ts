@@ -33,7 +33,6 @@ const saveImage = async (multerFile?: Express.Multer.File) => {
       imgType: multerFile.mimetype,
       img: Buffer.from(encodedImage, "base64"),
     };
-    console.log("finalImage", finalImg);
 
     return finalImg;
   }

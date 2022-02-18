@@ -88,7 +88,8 @@ router.post(
         await newImage.save();
       }
 
-      const tags = JSON.parse(req.body.tags);
+      let tags;
+      if (req.body.tags) tags = JSON.parse(req.body.tags);
 
       console.log("newTags", tags);
 
@@ -103,6 +104,74 @@ router.post(
             code: 200,
             message: "New project created.",
             newProject,
+          })
+        : res.status(404).end();
+    } catch (error: any) {
+      next(error);
+    }
+  }
+);
+
+router.put(
+  "/",
+  upload.single("image"),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Validate jwt token
+      // validateToken(req, res);
+
+      // const updateProject: IProject = req.body;
+      // TODO
+      // 1. If image does not EXIST
+      // => save new image
+      // 2. If image has same name
+      // => remove existing image
+      // => update existing image with new one
+      // 3. IF image DOES NOT have same name
+      // => remove IMAGE
+      // => update existing image with new one
+      /** IMAGE PROCESSING */
+      let multerFile: Express.Multer.File | undefined = req.file;
+
+      console.log("req.body.id", req.body.id);
+
+      console.log("request.file", multerFile);
+
+      const finalImg = await saveImage(multerFile);
+      let newImage;
+
+      console.log("1. finalImg", finalImg?.name);
+
+      if (finalImg) {
+        const prevProject: IProject | null = await Project.findById(
+          req.body.id
+        ).populate("image");
+        await Image.findByIdAndRemove(prevProject?.image?.id);
+
+        newImage = await Image.build(finalImg);
+        await newImage.save();
+      }
+
+      /** END OF IMAGE PROCESSING  */
+      let tags;
+      if (req.body.tags) tags = JSON.parse(req.body.tags);
+
+      const updateProject: IProject = { ...req.body, tags, image: newImage };
+
+      const project = await Project.findByIdAndUpdate(
+        updateProject.id,
+        {
+          ...updateProject,
+          // image: newImage,
+        },
+        { new: true }
+      ).populate("image");
+
+      return project
+        ? res.status(200).json({
+            code: 200,
+            message: "Project updated",
+            updatedProject: project,
           })
         : res.status(404).end();
     } catch (error: any) {

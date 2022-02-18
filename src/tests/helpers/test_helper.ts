@@ -1,9 +1,14 @@
-import { User, Website } from "../../models";
+import { Project, User, Website } from "../../models";
 
 // Users
 const usersInDb = async () => {
   const users = await User.find({});
   return users.map((u) => u.toJSON());
+};
+
+const projectsInDb = async () => {
+  const projects = await Project.find({});
+  return projects.map((u) => u.toJSON());
 };
 
 // Single website document
@@ -12,4 +17,4 @@ const websiteInDb = async () => {
   return website.map((u) => u.toJSON());
 };
 
-export { usersInDb, websiteInDb };
+export { usersInDb, projectsInDb, websiteInDb };
