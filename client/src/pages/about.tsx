@@ -119,13 +119,15 @@ const ProfileImage = styled.img`
 
 const AboutPage: React.FC<IPage> = (props) => {
   const { website } = useContext(WebsiteContext);
-
-  let imgType = website.selectedProfileImg?.imgType;
-  let img = website.selectedProfileImg?.img;
-  let dataBase64;
-  if (img) dataBase64 = img.data;
-  const data = Buffer.from(dataBase64).toString("base64");
-  const src = `data:${imgType};charset=utf-8;base64,${data}`;
+  let src: string = "https://via.placeholder.com/700x400";
+  if (website.selectedProfileImg) {
+    let imgType = website.selectedProfileImg?.imgType;
+    let img = website.selectedProfileImg?.img;
+    let dataBase64;
+    if (img) dataBase64 = img.data;
+    const data = Buffer.from(dataBase64).toString("base64");
+    src = `data:${imgType};charset=utf-8;base64,${data}`;
+  }
 
   useEffect(() => {
     logging.info(`Loading ${props.name}`);
@@ -156,10 +158,7 @@ const AboutPage: React.FC<IPage> = (props) => {
         </NavBar>
         <GroupContainer>
           <ImageContainer>
-            <ProfileImage
-              alt="profile"
-              src={src || "https://via.placeholder.com/700x400"}
-            />
+            <ProfileImage alt="profile" src={src} />
           </ImageContainer>
           <TextContainer>
             <p>{website.aboutText}</p>
