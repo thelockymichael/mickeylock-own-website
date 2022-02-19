@@ -2,6 +2,7 @@ import IRoute from "../interfaces/route";
 import AboutPage from "../pages/about";
 import HomePage from "../pages/home";
 import ProjectsPage from "../pages/projects";
+import NotFound from "../pages/notFound";
 
 const routes: IRoute[] = [
   {
@@ -20,6 +21,12 @@ const routes: IRoute[] = [
     path: "/projects",
     name: "Projects",
     component: ProjectsPage,
+    exact: true,
+  },
+  {
+    path: "/*",
+    name: "Page Not Found",
+    component: NotFound,
     exact: true,
   },
 ];
