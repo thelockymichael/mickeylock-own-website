@@ -7,7 +7,7 @@ const usersInDb = async () => {
 };
 
 const projectsInDb = async () => {
-  const projects = await Project.find({});
+  const projects = await Project.find({}).populate("image");
   return projects.map((u) => u.toJSON());
 };
 

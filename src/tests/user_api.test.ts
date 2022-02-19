@@ -9,7 +9,7 @@ jest.setTimeout(30000);
 
 const api = supertest(app);
 
-describe("creation of first user and registering other users with first created user", () => {
+describe("creating and registering users with root user", () => {
   beforeEach(async () => {
     await User.deleteMany({});
   });

@@ -19,7 +19,7 @@ const api = supertest(app);
 // 3. Edit aboutText and upload PROFILE IMG
 // => Create DUMMY profile image PortfolioPic2_23.0.1...
 
-describe("creation of website document and editing the website ", () => {
+describe("creating and editing projects ", () => {
   beforeAll(async () => {
     // await Website.deleteMany({});
     await User.deleteMany({});
@@ -42,233 +42,338 @@ describe("creation of website document and editing the website ", () => {
       .expect("Content-Type", /application\/json/);
   });
 
-  /** POST */
-  test("create new project with name and description", async () => {
-    const projectsAtStart = await helper.projectsInDb();
+  describe("create", () => {
+    /** POST */
+    test("create new project with name and description", async () => {
+      const projectsAtStart = await helper.projectsInDb();
 
-    let authToken;
-    await api
-      .post("/api/login")
-      .send({
-        fullName: "root",
-        password: "abc123",
-      })
-      .then((response) => {
-        authToken = response.body.authToken;
-      });
+      let authToken;
+      await api
+        .post("/api/login")
+        .send({
+          fullName: "root",
+          password: "abc123",
+        })
+        .then((response) => {
+          authToken = response.body.authToken;
+        });
 
-    const newProject = {
-      name: "Veho GO",
-      description: "React Native -mobiilisovellus.",
-    };
+      const newProject = {
+        name: "Veho GO",
+        description: "React Native -mobiilisovellus.",
+      };
 
-    await api
-      .post("/api/website/projects")
-      .send(newProject)
-      .set("Authorization", `bearer ${authToken}`)
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
+      await api
+        .post("/api/website/projects")
+        .send(newProject)
+        .set("Authorization", `bearer ${authToken}`)
+        .expect(200)
+        .expect("Content-Type", /application\/json/);
 
-    const projectsAtEnd = await helper.projectsInDb();
-    expect(projectsAtEnd).toHaveLength(projectsAtStart.length + 1);
+      const projectsAtEnd = await helper.projectsInDb();
+      expect(projectsAtEnd).toHaveLength(projectsAtStart.length + 1);
 
-    const project = projectsAtEnd.map((u) => u.name);
-    expect(project).toContain(newProject.name);
+      const project = projectsAtEnd.map((u) => u.name);
+      expect(project).toContain(newProject.name);
+    });
+
+    test("create new project with name, description, tags, date and gitHubLink", async () => {
+      const projectsAtStart = await helper.projectsInDb();
+
+      let authToken;
+      await api
+        .post("/api/login")
+        .send({
+          fullName: "root",
+          password: "abc123",
+        })
+        .then((response) => {
+          authToken = response.body.authToken;
+        });
+
+      const newProject: IProject = {
+        name: "Veho GO",
+        description: "React Native -mobiilisovellus.",
+        tags: ["React", "Firebase"],
+        gitHubLink: "https://github.com/Vehonaattorit/VEHOGO",
+        date: new Date(),
+      };
+
+      await api
+        .post("/api/website/projects")
+        .send(newProject)
+        .set("Authorization", `bearer ${authToken}`)
+        .expect(200)
+        .expect("Content-Type", /application\/json/);
+
+      const projectsAtEnd = await helper.projectsInDb();
+      expect(projectsAtEnd).toHaveLength(projectsAtStart.length + 1);
+
+      const project = projectsAtEnd.map((u) => u.name);
+      expect(project).toContain(newProject.name);
+    });
+
+    test("create new project with image, name, description, tags, date and gitHubLink", async () => {
+      const projectsAtStart = await helper.projectsInDb();
+
+      let authToken;
+      await api
+        .post("/api/login")
+        .send({
+          fullName: "root",
+          password: "abc123",
+        })
+        .then((response) => {
+          authToken = response.body.authToken;
+        });
+
+      const img = path.resolve(__dirname, "./dummy-img/angry-resized.png");
+
+      const newProject = {
+        name: "AR Travel",
+        description: "AR-tekniikkaa hyödyntä kännykkäsovellus.",
+        tags: ["Android", "ARCore", "Google"],
+        gitHubLink: "https://github.com/Vehonaattorit/VEHOGO",
+        date: new Date(),
+      };
+
+      await api
+        .post("/api/website/projects")
+        .set("Authorization", `bearer ${authToken}`)
+        .field("name", newProject.name)
+        .field("description", newProject.description)
+        .field("tags", newProject.tags)
+        .field("gitHubLink", newProject.gitHubLink)
+        .field("date", newProject.date.toISOString())
+        .attach("image", img)
+        .expect(200)
+        .expect("Content-Type", /application\/json/);
+
+      const projectsAtEnd = await helper.projectsInDb();
+      expect(projectsAtEnd).toHaveLength(projectsAtStart.length + 1);
+
+      const project = projectsAtEnd.map((u) => u.name);
+      expect(project).toContain(newProject.name);
+    });
+
+    /** END POST */
   });
 
-  test("create new project with name, description, tags, date and gitHubLink", async () => {
-    const projectsAtStart = await helper.projectsInDb();
+  describe("update", () => {
+    /** PUT */
+    test("update a project with new name and description", async () => {
+      const projectsAtStart = await helper.projectsInDb();
 
-    let authToken;
-    await api
-      .post("/api/login")
-      .send({
-        fullName: "root",
-        password: "abc123",
-      })
-      .then((response) => {
-        authToken = response.body.authToken;
-      });
+      // Prev project
+      let authToken;
+      await api
+        .post("/api/login")
+        .send({
+          fullName: "root",
+          password: "abc123",
+        })
+        .then((response) => {
+          authToken = response.body.authToken;
+        });
+      // First project in Array
+      let projectId = projectsAtStart[0].id;
+      const updateProject = {
+        id: projectId,
+        name: "Haunted House",
+        description: "React Nativella tehty sovellus.",
+      };
 
-    const newProject: IProject = {
-      name: "Veho GO",
-      description: "React Native -mobiilisovellus.",
-      tags: ["React", "Firebase"],
-      gitHubLink: "https://github.com/Vehonaattorit/VEHOGO",
-      date: new Date(),
-    };
+      await api
+        .put("/api/website/projects")
+        .send(updateProject)
+        .set("Authorization", `bearer ${authToken}`)
+        .expect(200)
+        .expect("Content-Type", /application\/json/);
 
-    await api
-      .post("/api/website/projects")
-      .send(newProject)
-      .set("Authorization", `bearer ${authToken}`)
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
+      console.log("projectId [0]", projectsAtStart[0].id);
+      const projectsAtEnd = await helper.projectsInDb();
+      console.log("projectId [0] end", projectsAtEnd[0].id);
 
-    const projectsAtEnd = await helper.projectsInDb();
-    expect(projectsAtEnd).toHaveLength(projectsAtStart.length + 1);
+      expect(projectsAtEnd).toHaveLength(projectsAtStart.length);
 
-    const project = projectsAtEnd.map((u) => u.name);
-    expect(project).toContain(newProject.name);
+      expect(projectsAtEnd[0].name).toContain(updateProject.name);
+      expect(projectsAtEnd[0].description).toContain(updateProject.description);
+    });
+
+    test("update a project with new name, description, tags, date and gitHubLink", async () => {
+      const projectsAtStart = await helper.projectsInDb();
+
+      // Prev project
+      let authToken;
+      await api
+        .post("/api/login")
+        .send({
+          fullName: "root",
+          password: "abc123",
+        })
+        .then((response) => {
+          authToken = response.body.authToken;
+        });
+      // First project in Array
+      let projectId = projectsAtStart[0].id;
+      const updateProject = {
+        id: projectId,
+        name: "EasyDiary",
+        description: "Facebook-looking website created in vanilla JavaScript.",
+        tags: ["JavaScript", "NodeJS", "MariaDB"],
+        gitHubLink: "https://google.com",
+        date: new Date(),
+      };
+
+      await api
+        .put("/api/website/projects")
+        .send(updateProject)
+        .set("Authorization", `bearer ${authToken}`)
+        .expect(200)
+        .expect("Content-Type", /application\/json/);
+
+      const projectsAtEnd = await helper.projectsInDb();
+
+      expect(projectsAtEnd).toHaveLength(projectsAtStart.length);
+
+      expect(projectsAtEnd[0].name).toContain(updateProject.name);
+      expect(projectsAtEnd[0].description).toContain(updateProject.description);
+      expect(projectsAtEnd[0].tags).toEqual(updateProject.tags);
+    });
+
+    test("update a project with new image, name, description, tags, date and gitHubLink", async () => {
+      const projectsAtStart = await helper.projectsInDb();
+
+      // Prev project
+      let authToken;
+      await api
+        .post("/api/login")
+        .send({
+          fullName: "root",
+          password: "abc123",
+        })
+        .then((response) => {
+          authToken = response.body.authToken;
+        });
+      // First project in Array
+      let projectId = projectsAtStart[0].id;
+      const updateProject = {
+        id: projectId,
+        name: "EasyDiary",
+        description: "Facebook-looking website created in vanilla JavaScript.",
+        tags: ["JavaScript", "NodeJS", "MariaDB"],
+        gitHubLink: "https://google.com",
+        date: new Date(),
+      };
+
+      await api
+        .put("/api/website/projects")
+        .send(updateProject)
+        .set("Authorization", `bearer ${authToken}`)
+        .expect(200)
+        .expect("Content-Type", /application\/json/);
+
+      const projectsAtEnd = await helper.projectsInDb();
+
+      expect(projectsAtEnd).toHaveLength(projectsAtStart.length);
+
+      expect(projectsAtEnd[0].name).toContain(updateProject.name);
+      expect(projectsAtEnd[0].description).toContain(updateProject.description);
+      expect(projectsAtEnd[0].tags).toEqual(updateProject.tags);
+      expect(projectsAtEnd[0].gitHubLink).toContain(updateProject.gitHubLink);
+      expect(projectsAtEnd[0].date).toEqual(updateProject.date);
+    });
+
+    test("create new project with image, name, description, tags, date and gitHubLink", async () => {
+      const projectsAtStart = await helper.projectsInDb();
+
+      let authToken;
+      await api
+        .post("/api/login")
+        .send({
+          fullName: "root",
+          password: "abc123",
+        })
+        .then((response) => {
+          authToken = response.body.authToken;
+        });
+
+      const img = path.resolve(__dirname, "./dummy-img/angry-resized.png");
+
+      let projectId = projectsAtStart[1].id ? projectsAtStart[1].id : "";
+      const updateProject = {
+        id: projectId,
+        name: "CoffeeShop",
+        description: "CoffeeShop mobile app and website.",
+        tags: ["Flutter", "Mocha", "PostgreSQL"],
+        gitHubLink: "https://github.com/Vehonaattorit/VEHOGO",
+        date: new Date(),
+      };
+
+      await api
+        .put("/api/website/projects")
+        .set("Authorization", `bearer ${authToken}`)
+        .field("id", updateProject.id)
+        .field("name", updateProject.name)
+        .field("description", updateProject.description)
+        .field("tags", updateProject.tags)
+        .field("gitHubLink", updateProject.gitHubLink)
+        .field("date", updateProject.date.toISOString())
+        .attach("image", img)
+        .expect(200)
+        .expect("Content-Type", /application\/json/);
+
+      const projectsAtEnd = await helper.projectsInDb();
+      expect(projectsAtEnd).toHaveLength(projectsAtStart.length);
+
+      expect(projectsAtEnd[1].name).toContain(updateProject.name);
+      expect(projectsAtEnd[1].description).toContain(updateProject.description);
+      expect(projectsAtEnd[1].tags).toEqual(updateProject.tags);
+      expect(projectsAtEnd[1].gitHubLink).toContain(updateProject.gitHubLink);
+      expect(projectsAtEnd[1].date).toEqual(updateProject.date);
+
+      // TODO
+      // Get IMAGE name
+      console.log("projectsAtEnd[1].image?.name", projectsAtEnd[1].image?.name);
+
+      expect(projectsAtEnd[1].image?.name).toContain("angry-resized.png");
+    });
+    /** PUT END */
   });
 
-  test("create new project with image, name, description, tags, date and gitHubLink", async () => {
-    const projectsAtStart = await helper.projectsInDb();
+  describe("remove", () => {
+    /** PUT */
+    test("remove a project", async () => {
+      const projectsAtStart = await helper.projectsInDb();
 
-    let authToken;
-    await api
-      .post("/api/login")
-      .send({
-        fullName: "root",
-        password: "abc123",
-      })
-      .then((response) => {
-        authToken = response.body.authToken;
-      });
+      // Prev project
+      let authToken;
+      await api
+        .post("/api/login")
+        .send({
+          fullName: "root",
+          password: "abc123",
+        })
+        .then((response) => {
+          authToken = response.body.authToken;
+        });
+      // First project in Array
+      let projectToDelete = projectsAtStart[0];
 
-    const img = path.resolve(__dirname, "./dummy-img/angry-resized.png");
+      await api
+        .delete(`/api/website/projects/${projectToDelete.id}`)
+        .set("Authorization", `bearer ${authToken}`)
+        .expect(200);
 
-    const newProject = {
-      name: "AR Travel",
-      description: "AR-tekniikkaa hyödyntä kännykkäsovellus.",
-      tags: ["Android", "ARCore", "Google"],
-      gitHubLink: "https://github.com/Vehonaattorit/VEHOGO",
-      date: new Date(),
-    };
+      const projectsAtEnd = await helper.projectsInDb();
 
-    await api
-      .post("/api/website/projects")
-      .set("Authorization", `bearer ${authToken}`)
-      .field("name", newProject.name)
-      .field("description", newProject.description)
-      .field("tags", newProject.tags)
-      .field("gitHubLink", newProject.gitHubLink)
-      .field("date", newProject.date.toISOString())
-      .attach("image", img)
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
+      expect(projectsAtEnd).toHaveLength(projectsAtStart.length - 1);
 
-    const projectsAtEnd = await helper.projectsInDb();
-    expect(projectsAtEnd).toHaveLength(projectsAtStart.length + 1);
+      const names = projectsAtEnd.map((r) => r.name);
 
-    const project = projectsAtEnd.map((u) => u.name);
-    expect(project).toContain(newProject.name);
+      expect(names).not.toContain(projectToDelete.name);
+    });
   });
-
-  /** END POST */
-
-  /** PUT */
-  test("update a project with new name and description", async () => {
-    const projectsAtStart = await helper.projectsInDb();
-
-    // Prev project
-
-    let authToken;
-    await api
-      .post("/api/login")
-      .send({
-        fullName: "root",
-        password: "abc123",
-      })
-      .then((response) => {
-        authToken = response.body.authToken;
-      });
-
-    const img = path.resolve(__dirname, "./dummy-img/angry-resized.png");
-
-    const newProject = {
-      name: "",
-      description: "AR-tekniikkaa hyödyntä kännykkäsovellus.",
-    };
-
-    await api
-      .put("/api/website/projects")
-      .set("Authorization", `bearer ${authToken}`)
-      .field("name", newProject.name)
-      .field("description", newProject.description)
-      .field("tags", newProject.tags)
-      .field("gitHubLink", newProject.gitHubLink)
-      .field("date", newProject.date.toISOString())
-      .attach("image", img)
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-
-    const projectsAtEnd = await helper.projectsInDb();
-    expect(projectsAtEnd).toHaveLength(projectsAtStart.length + 1);
-
-    const project = projectsAtEnd.map((u) => u.name);
-    expect(project).toContain(newProject.name);
-  });
-  /** PUT END */
-
-  // test("update name and descText properties of a website", async () => {
-  //   let authToken;
-  //   await api
-  //     .post("/api/login")
-  //     .send({
-  //       fullName: "root",
-  //       password: "abc123",
-  //     })
-  //     .then((response) => {
-  //       authToken = response.body.authToken;
-  //     });
-
-  //   const updatedWebsite = {
-  //     name: "Mickey Lock",
-  //     descText: "Frontend || Backend",
-  //   };
-
-  //   await api
-  //     .put("/api/website/")
-  //     .set("Authorization", `bearer ${authToken}`)
-  //     .send(updatedWebsite)
-  //     .expect(200)
-  //     .expect("Content-Type", /application\/json/);
-
-  //   const websiteAtEnd = await helper.websiteInDb();
-  //   expect(websiteAtEnd).toHaveLength(1);
-
-  //   const websiteName = websiteAtEnd.map((u) => u.name);
-  //   const websiteDesc = websiteAtEnd.map((u) => u.descText);
-
-  //   expect(websiteName).toContain(updatedWebsite.name);
-  //   expect(websiteDesc).toContain(updatedWebsite.descText);
-  // });
-
-  // test("update aboutText and upload profile img", async () => {
-  //   let authToken;
-  //   await api
-  //     .post("/api/login")
-  //     .send({
-  //       fullName: "root",
-  //       password: "abc123",
-  //     })
-  //     .then((response) => {
-  //       authToken = response.body.authToken;
-  //     });
-
-  //   // TODO
-  //   // 1. Upload profile picture
-  //   // const img = fs.readFileSync(`${__dirname}/dummy-img/angry-resized.png`);
-  //   const img = path.resolve(__dirname, "./dummy-img/angry-resized.png");
-
-  //   const abouText = "Hello everybody!";
-
-  //   await api
-  //     .put("/api/website/")
-  //     .set("Authorization", `bearer ${authToken}`)
-  //     .field("aboutText", abouText)
-  //     .attach("selectedProfileImg", img)
-  //     .expect(200)
-  //     .expect("Content-Type", /application\/json/);
-
-  //   const websiteAtEnd = await helper.websiteInDb();
-  //   expect(websiteAtEnd).toHaveLength(1);
-
-  //   const websiteName = websiteAtEnd.map((u) => u.aboutText);
-
-  //   expect(websiteName).toContain(abouText);
-  // });
 });
 
 afterAll(async () => {

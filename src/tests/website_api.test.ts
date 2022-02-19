@@ -19,7 +19,7 @@ const api = supertest(app);
 // 3. Edit aboutText and upload PROFILE IMG
 // => Create DUMMY profile image PortfolioPic2_23.0.1...
 
-describe("creation of website document and editing the website ", () => {
+describe("creating and editing the website ", () => {
   beforeAll(async () => {
     await Website.deleteMany({});
     await User.deleteMany({});

@@ -4,6 +4,7 @@ import { Image, IProject, IUser, Project, User } from "../models";
 import multer from "multer";
 import { fileFilter } from "../utils/fileFilter";
 import { saveImage } from "../utils/resize";
+import { validateToken } from "../utils/auth";
 
 require("express-async-errors");
 
@@ -72,7 +73,7 @@ router.post(
 
     try {
       // Validate jwt token
-      // validateToken(req, res);
+      validateToken(req, res);
 
       let multerFile: Express.Multer.File | undefined = req.file;
 
@@ -88,8 +89,8 @@ router.post(
         await newImage.save();
       }
 
-      let tags;
-      if (req.body.tags) tags = JSON.parse(req.body.tags);
+      let tags = req.body.tags;
+      if (typeof tags === "string") tags = JSON.parse(req.body.tags);
 
       console.log("newTags", tags);
 
@@ -118,7 +119,7 @@ router.put(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Validate jwt token
-      // validateToken(req, res);
+      validateToken(req, res);
 
       // const updateProject: IProject = req.body;
       // TODO
@@ -153,8 +154,8 @@ router.put(
       }
 
       /** END OF IMAGE PROCESSING  */
-      let tags;
-      if (req.body.tags) tags = JSON.parse(req.body.tags);
+      let tags = req.body.tags;
+      if (typeof tags === "string") tags = JSON.parse(req.body.tags);
 
       const updateProject: IProject = { ...req.body, tags, image: newImage };
 
@@ -185,7 +186,7 @@ router.delete(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Validate jwt token
-      // validateToken(req, res);
+      validateToken(req, res);
 
       const projectId = req.params.id;
 
