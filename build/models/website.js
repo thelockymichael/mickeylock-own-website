@@ -16,11 +16,15 @@ var websiteSchema = new mongoose_1.default.Schema({
     aboutText: {
         type: String,
     },
-    uploadedImgs: {
-        type: [String],
-    },
+    uploadedImgs: [
+        {
+            type: mongoose_1.default.Schema.Types.ObjectId,
+            ref: "Image",
+        },
+    ],
     selectedProfileImg: {
-        type: String,
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        ref: "Image",
     },
     projects: [
         {

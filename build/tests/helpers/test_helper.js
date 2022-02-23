@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.usersInDb = void 0;
+exports.websiteInDb = exports.projectsInDb = exports.usersInDb = void 0;
 var models_1 = require("../../models");
 // Users
 var usersInDb = function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -51,3 +51,28 @@ var usersInDb = function () { return __awaiter(void 0, void 0, void 0, function 
     });
 }); };
 exports.usersInDb = usersInDb;
+var projectsInDb = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var projects;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, models_1.Project.find({}).populate("image")];
+            case 1:
+                projects = _a.sent();
+                return [2 /*return*/, projects.map(function (u) { return u.toJSON(); })];
+        }
+    });
+}); };
+exports.projectsInDb = projectsInDb;
+// Single website document
+var websiteInDb = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var website;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, models_1.Website.find({})];
+            case 1:
+                website = _a.sent();
+                return [2 /*return*/, website.map(function (u) { return u.toJSON(); })];
+        }
+    });
+}); };
+exports.websiteInDb = websiteInDb;

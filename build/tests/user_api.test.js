@@ -65,7 +65,7 @@ var helper = __importStar(require("./helpers/test_helper"));
 var models_1 = require("../models");
 jest.setTimeout(30000);
 var api = (0, supertest_1.default)(app_1.default);
-describe("creation of first user and registering other users with first created user", function () {
+describe("creating and registering users with root user", function () {
     beforeEach(function () { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -83,7 +83,6 @@ describe("creation of first user and registering other users with first created 
                 case 0: return [4 /*yield*/, helper.usersInDb()];
                 case 1:
                     usersAtStart = _a.sent();
-                    console.log("users at start ", usersAtStart.length);
                     newUser = {
                         fullName: "root",
                         about: "Duplicate user",
@@ -264,6 +263,16 @@ describe("creation of first user and registering other users with first created 
         });
     }); });
 });
-afterAll(function () {
-    mongoose_1.default.connection.close();
-}, 10000);
+afterAll(function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, models_1.User.deleteMany({})];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, mongoose_1.default.connection.close()];
+            case 2:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); }, 10000);

@@ -58,7 +58,6 @@ router.post("/", function (req, res, next) { return __awaiter(void 0, void 0, vo
                     })];
             case 1:
                 user = _c.sent();
-                console.log("jotain", user);
                 if (!(user === null)) return [3 /*break*/, 2];
                 _b = false;
                 return [3 /*break*/, 4];

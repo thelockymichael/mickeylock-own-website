@@ -93,15 +93,6 @@ router.post("/register", function (req, res, next) { return __awaiter(void 0, vo
                 findOneUser = _c.sent();
                 if (findOneUser) {
                     (0, auth_1.validateToken)(req, res);
-                    // console.log("findOneUser", findOneUser);
-                    // const token = getTokenFrom(req);
-                    // console.log("token", token);
-                    // const decodedToken = jwt.verify(token, process.env.SECRET);
-                    // if (!token || !decodedToken.id) {
-                    //   return response
-                    //     .status(401)
-                    //     .json({ error: "token missing or invalid" });
-                    // }
                 }
                 _a = req.body, fullName = _a.fullName, password = _a.password, about = _a.about, profileImage = _a.profileImage;
                 saltRounds = 10;

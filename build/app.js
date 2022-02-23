@@ -62,7 +62,7 @@ app.use("/api/user", routes_1.userRouter);
 // Login router
 app.use("/api/login", routes_1.loginRouter);
 // Project router
-app.use("/api/project", routes_1.projectRouter);
+app.use("/api/website/projects", routes_1.projectRouter);
 // All other GET requests not handled will return to our React app
 app.get("*", function (req, res) {
     res.sendFile(path_1.default.resolve(__dirname, "../client/build", "index.html"));

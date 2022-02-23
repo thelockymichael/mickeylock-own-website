@@ -57,8 +57,10 @@ var models_1 = require("../models");
 var fileFilter_1 = require("../utils/fileFilter");
 // Image file UPLOAD import
 var multer_1 = __importDefault(require("multer"));
+// import { makeThumbnail } from "../utils/resize";
+var auth_1 = require("../utils/auth");
+var image_1 = require("../models/image");
 var resize_1 = require("../utils/resize");
-var mongoose_1 = require("mongoose");
 var storage = multer_1.default.diskStorage({
     destination: function (req, file, cb) {
         cb(null, "./uploads/");
@@ -70,13 +72,17 @@ var storage = multer_1.default.diskStorage({
 var upload = (0, multer_1.default)({ storage: storage, fileFilter: fileFilter_1.fileFilter });
 var router = express_1.default.Router();
 exports.websiteRouter = router;
+// 1. Get website data
 router.get("/", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var website, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, models_1.Website.findOne({}).populate("projects")];
+                return [4 /*yield*/, models_1.Website.findOne({})
+                        .populate("selectedProfileImg")
+                        .populate("uploadedImgs")
+                        .populate("projects")];
             case 1:
                 website = _a.sent();
                 return [2 /*return*/, website ? res.status(200).send(website) : res.status(404).end()];
@@ -88,50 +94,112 @@ router.get("/", function (req, res, next) { return __awaiter(void 0, void 0, voi
         }
     });
 }); });
-// TODO
-// Don't remove. Might need this later
-// router.post("/", async (req: Request, res: Response, next: NextFunction) => {
-//   try {
-//     const { name, descText, aboutText, profileImage, projects } = req.body;
-//     const website = Website.build({
-//       name,
-//       descText,
-//       aboutText,
-//       profileImage,
-//       projects,
-//     });
-/* END */
-// 4. UPDATE single item
-router.put("/", upload.single("selectedProfileImg"), function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var updateWebsite, multerFile, thumb, uploadedImgs, updateUploadedImgs, website, error_2;
+// 2. Get Binary Data from selectedProfileImg
+router.get("/selectedProfileImg", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var website, error_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 4, , 5]);
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, models_1.Website.findOne({}).populate("selectedProfileImg")];
+            case 1:
+                website = _a.sent();
+                return [2 /*return*/, website ? res.status(200).send(website) : res.status(404).end()];
+            case 2:
+                error_2 = _a.sent();
+                next(error_2);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
+// 3. Get Binary Data from uploadedImgs
+router.get("/uploadedImgs", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var website, error_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, models_1.Website.findOne({}).populate("uploadedImgs")];
+            case 1:
+                website = _a.sent();
+                return [2 /*return*/, website ? res.status(200).send(website) : res.status(404).end()];
+            case 2:
+                error_3 = _a.sent();
+                next(error_3);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
+// Initialize website for the first time
+router.post("/", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var findWebsite, website, _a, message;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _b.trys.push([0, 3, , 4]);
+                return [4 /*yield*/, models_1.Website.findOne({})];
+            case 1:
+                findWebsite = _b.sent();
+                if (findWebsite) {
+                    // Validate jwt token
+                    (0, auth_1.validateToken)(req, res);
+                }
+                website = models_1.Website.build({
+                    name: "Michael Lock",
+                    descText: "Mobile Apps || Fullstack",
+                    aboutText: "Hello everybody",
+                    uploadedImgs: [],
+                    projects: [],
+                });
+                return [4 /*yield*/, website.save()];
+            case 2:
+                _b.sent();
+                return [2 /*return*/, res.status(200).send(website)];
+            case 3:
+                _a = _b.sent();
+                message = _a.message;
+                res.status(401).json({
+                    user: null,
+                    error: message,
+                });
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });
+router.put("/", upload.single("selectedProfileImg"), function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var updateWebsite, multerFile, finalImg, newImage, website, error_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 6, , 7]);
+                // Validate jwt token
+                (0, auth_1.validateToken)(req, res);
+                console.log("req.body ADS-123", req.body);
                 updateWebsite = req.body;
                 multerFile = req.file;
-                thumb = void 0;
                 console.log("request.file", multerFile);
-                if (!multerFile) return [3 /*break*/, 2];
-                return [4 /*yield*/, (0, resize_1.makeThumbnail)(multerFile.path, "./thumbnails/" + multerFile.filename)];
+                return [4 /*yield*/, (0, resize_1.saveImage)(multerFile)];
             case 1:
-                thumb = _a.sent();
-                console.log("thumb", thumb);
-                _a.label = 2;
+                finalImg = _a.sent();
+                newImage = void 0;
+                console.log("1. finalImg", finalImg === null || finalImg === void 0 ? void 0 : finalImg.name);
+                if (!finalImg) return [3 /*break*/, 4];
+                return [4 /*yield*/, image_1.Image.build(finalImg)];
             case 2:
-                uploadedImgs = updateWebsite.uploadedImgs;
-                updateUploadedImgs = uploadedImgs
-                    ? uploadedImgs.concat(multerFile === null || multerFile === void 0 ? void 0 : multerFile.filename)
-                    : [multerFile === null || multerFile === void 0 ? void 0 : multerFile.filename];
-                return [4 /*yield*/, models_1.Website.findOneAndUpdate({
-                        $query: "",
-                        referenceId: {
-                            $ne: [new mongoose_1.mongo.ObjectID(req.params.referenceId)],
-                        },
-                    }, __assign(__assign({}, updateWebsite), { $addToSet: {
-                            uploadedImgs: multerFile === null || multerFile === void 0 ? void 0 : multerFile.filename,
-                        }, selectedProfileImg: multerFile === null || multerFile === void 0 ? void 0 : multerFile.filename }), { new: true })];
+                newImage = _a.sent();
+                return [4 /*yield*/, newImage.save()];
             case 3:
+                _a.sent();
+                _a.label = 4;
+            case 4: return [4 /*yield*/, models_1.Website.findOneAndUpdate({
+                    $query: "",
+                }, __assign(__assign({}, updateWebsite), { $push: {
+                        uploadedImgs: newImage,
+                    }, selectedProfileImg: newImage }), { new: true }).populate("selectedProfileImg")];
+            case 5:
                 website = _a.sent();
                 return [2 /*return*/, website
                         ? res.status(200).json({
@@ -140,20 +208,22 @@ router.put("/", upload.single("selectedProfileImg"), function (req, res, next) {
                             updatedWebsite: website,
                         })
                         : res.status(404).end()];
-            case 4:
-                error_2 = _a.sent();
-                next(error_2);
-                return [3 /*break*/, 5];
-            case 5: return [2 /*return*/];
+            case 6:
+                error_4 = _a.sent();
+                next(error_4);
+                return [3 /*break*/, 7];
+            case 7: return [2 /*return*/];
         }
     });
 }); });
 router.get("/uploaded/images", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var website, error_3;
+    var website, error_5;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
+                // Validate jwt token
+                (0, auth_1.validateToken)(req, res);
                 return [4 /*yield*/, models_1.Website.findOne({})];
             case 1:
                 website = _a.sent();
@@ -161,10 +231,82 @@ router.get("/uploaded/images", function (req, res, next) { return __awaiter(void
                         ? res.status(200).send(website.uploadedImgs)
                         : res.status(404).end()];
             case 2:
-                error_3 = _a.sent();
-                next(error_3);
+                error_5 = _a.sent();
+                next(error_5);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
+        }
+    });
+}); });
+router.delete("/uploaded/images/:id", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, updatedWebsite, error_6;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 3, , 4]);
+                // Validate jwt token
+                (0, auth_1.validateToken)(req, res);
+                id = req.params.id;
+                return [4 /*yield*/, image_1.Image.findByIdAndRemove(id)];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, models_1.Website.findOneAndUpdate({
+                        $query: "",
+                    }, {
+                        $pull: {
+                            uploadedImgs: {
+                                $in: [id],
+                            },
+                        },
+                    }, { new: true })];
+            case 2:
+                updatedWebsite = _a.sent();
+                return [2 /*return*/, updatedWebsite
+                        ? res.status(200).json({
+                            code: 200,
+                            message: "Image is deleted.",
+                            updatedWebsite: updatedWebsite,
+                        })
+                        : res.status(404).end()];
+            case 3:
+                error_6 = _a.sent();
+                next(error_6);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });
+router.put("/uploaded/images/:id", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, replaceImage, updatedWebsite, error_7;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 3, , 4]);
+                // Validate jwt token
+                (0, auth_1.validateToken)(req, res);
+                id = req.params.id;
+                return [4 /*yield*/, image_1.Image.findById(id)];
+            case 1:
+                replaceImage = _a.sent();
+                return [4 /*yield*/, models_1.Website.findOneAndUpdate({
+                        $query: "",
+                    }, {
+                        selectedProfileImg: replaceImage,
+                    }, { new: true })];
+            case 2:
+                updatedWebsite = _a.sent();
+                return [2 /*return*/, updatedWebsite
+                        ? res.status(200).json({
+                            code: 200,
+                            message: "Profile image is now updated.",
+                            updatedWebsite: updatedWebsite,
+                        })
+                        : res.status(404).end()];
+            case 3:
+                error_7 = _a.sent();
+                next(error_7);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); });

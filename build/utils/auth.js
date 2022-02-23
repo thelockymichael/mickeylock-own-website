@@ -15,7 +15,6 @@ var getTokenFrom = function (request) {
 exports.getTokenFrom = getTokenFrom;
 var validateToken = function (req, res) {
     var token = getTokenFrom(req);
-    console.log("token", token);
     var decodedToken = jsonwebtoken_1.default.verify(token, process.env.SECRET);
     if (!token || !decodedToken.id) {
         return res.status(401).json({ error: "token missing or invalid" });

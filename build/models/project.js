@@ -23,14 +23,13 @@ var ProjectSchema = new mongoose_1.default.Schema({
         type: String,
         required: false,
     },
-    imageUrl: {
-        type: String,
-        required: false,
-    },
-    date: Date,
-    user: {
+    image: {
         type: mongoose_1.default.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "Image",
+    },
+    date: {
+        type: Date,
+        required: false,
     },
 });
 ProjectSchema.set("toJSON", {

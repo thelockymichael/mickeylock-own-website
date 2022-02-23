@@ -1,39 +1,41 @@
-import React, { useEffect } from "react";
-import IPage from "../interfaces/page";
-import logging from "../config/logging";
+import React, { useContext, useEffect, useState } from "react"
+import IPage from "../interfaces/page"
+import logging from "../config/logging"
 
-import styled from "styled-components";
+import styled from "styled-components"
 
 import {
-  infoSectColor,
   primaryColor,
   primaryShade,
   primaryText,
   secondaryColor,
-  secondaryText,
-  tagColor,
-} from "../colors/colors";
+} from "../colors/colors"
 
 // Icons
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faCaretDown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faArrowLeft, faCaretDown } from "@fortawesome/free-solid-svg-icons"
 
 // Route
-import { Link } from "react-router-dom";
-import { faGithub } from "@fortawesome/free-brands-svg-icons";
-import { ProjectItem } from "../components";
+import { Link } from "react-router-dom"
+import { faGithub } from "@fortawesome/free-brands-svg-icons"
+import { ProjectItem } from "../components"
+
+import { WebsiteContext } from "../contexts/website"
+import { IProject } from "../models"
+
+import projectService from "../services/projects"
 
 const Wrapper = styled.div`
   height: 100%;
   background-color: ${primaryColor};
-`;
+`
 
 const Container = styled.div`
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
   justify-content: space-around;
-`;
+`
 
 // My name container & text
 const NavBar = styled.div`
@@ -44,7 +46,7 @@ const NavBar = styled.div`
   @media (max-width: 768px) {
     flex-direction: column;
   }
-`;
+`
 
 const NavBarBack = styled.div`
   padding: 2rem;
@@ -55,7 +57,7 @@ const NavBarBack = styled.div`
   @media (max-width: 768px) {
     justify-content: flex-start;
   }
-`;
+`
 
 const NavBarItem = styled.div`
   flex: 2;
@@ -66,7 +68,7 @@ const NavBarItem = styled.div`
     padding: 2rem;
     flex: 1;
   }
-`;
+`
 
 const NavLink = styled(Link)`
   font-size: 10em;
@@ -82,12 +84,12 @@ const NavLink = styled(Link)`
     font-size: 4em;
     text-align-last: left;
   }
-`;
+`
 
 const Breakline = styled.div`
   height: 0.5rem;
   background-color: ${primaryShade};
-`;
+`
 
 const ListContainer = styled.div`
   display: grid;
@@ -100,12 +102,21 @@ const ListContainer = styled.div`
     grid-auto-columns: minmax(60rem, auto);
     grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
   }
-`;
+`
 
-const AboutPage: React.FC<IPage> = (props) => {
+const ProjectsPage: React.FC<IPage> = (props) => {
+  const [projects, setProjects] = useState<Array<IProject>>([])
+
   useEffect(() => {
-    logging.info(`Loading ${props.name}`);
-  }, [props.name]);
+    const getData = async () => {
+      projectService.getAll().then((projects) => {
+        setProjects(projects)
+      })
+
+      logging.info(`Loading ${props.name}`)
+    }
+    getData()
+  }, [props.name])
 
   return (
     <Wrapper>
@@ -131,13 +142,13 @@ const AboutPage: React.FC<IPage> = (props) => {
           <Breakline />
         </NavBar>
         <ListContainer>
-          <ProjectItem />
-          <ProjectItem />
-          <ProjectItem />
+          {projects?.map((item) => (
+            <ProjectItem item={item} />
+          ))}
         </ListContainer>
       </Container>
     </Wrapper>
-  );
-};
+  )
+}
 
-export default AboutPage;
+export default ProjectsPage

@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.makeThumbnail = void 0;
+exports.saveImage = exports.makeThumbnail = void 0;
 var sharp_1 = __importDefault(require("sharp"));
 var makeThumbnail = function (file, thumbname) { return __awaiter(void 0, void 0, void 0, function () {
     var thumbnail;
@@ -60,3 +60,31 @@ var makeThumbnail = function (file, thumbname) { return __awaiter(void 0, void 0
     });
 }); };
 exports.makeThumbnail = makeThumbnail;
+var saveImage = function (multerFile) { return __awaiter(void 0, void 0, void 0, function () {
+    var thumbnail, encodedImage, finalImg;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (!multerFile) return [3 /*break*/, 2];
+                return [4 /*yield*/, (0, sharp_1.default)(multerFile === null || multerFile === void 0 ? void 0 : multerFile.path)
+                        .resize(500, 750, {
+                        fit: sharp_1.default.fit.inside,
+                        withoutEnlargement: true,
+                    })
+                        .toFormat("jpeg")
+                        .jpeg({ quality: 80 })
+                        .toBuffer()];
+            case 1:
+                thumbnail = _a.sent();
+                encodedImage = thumbnail.toString("base64");
+                finalImg = {
+                    name: multerFile === null || multerFile === void 0 ? void 0 : multerFile.filename,
+                    imgType: multerFile.mimetype,
+                    img: Buffer.from(encodedImage, "base64"),
+                };
+                return [2 /*return*/, finalImg];
+            case 2: return [2 /*return*/];
+        }
+    });
+}); };
+exports.saveImage = saveImage;
